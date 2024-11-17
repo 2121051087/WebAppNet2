@@ -85,5 +85,11 @@ namespace WebAppNet2.Repositories
             }
             return result;
         }
+
+        public async Task LogOutAsync()
+        {
+            await _signInManager.SignOutAsync();
+            
+        }
     }
 }

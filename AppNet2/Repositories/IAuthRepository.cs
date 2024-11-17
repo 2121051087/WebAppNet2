@@ -8,6 +8,7 @@ namespace WebAppNet2.Repositories
         public Task<IdentityResult> RegisterAsync(RegisterVM model);
 
         public Task<object> LogInAsync(LogInVM model, HttpContext httpContext);
-        
+
+        public Task LogOutAsync();
     }
 }

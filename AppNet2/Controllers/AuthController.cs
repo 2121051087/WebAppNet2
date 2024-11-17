@@ -61,6 +61,14 @@ namespace WebAppNet2.Controllers
             }
             return View(model);
         }
-      
+
+
+        [HttpGet]
+        public async Task<IActionResult> LogOut()
+        {
+            HttpContext.Session.Clear();
+            await _authRepository.LogOutAsync();
+            return RedirectToAction("Index", "Home" , new {area =""});
+        }
     }
 }
