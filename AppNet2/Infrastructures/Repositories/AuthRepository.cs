@@ -10,7 +10,7 @@ using WebAppNet2.Models.Auth;
 
 
 
-namespace WebAppNet2.Repositories
+namespace WebAppNet2.Infrastructures.Repositories
 {
     public class AuthRepository : IAuthRepository
     {
@@ -19,7 +19,7 @@ namespace WebAppNet2.Repositories
         private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public AuthRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager , IConfiguration configuration , RoleManager<IdentityRole> roleManager)
+        public AuthRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -27,8 +27,8 @@ namespace WebAppNet2.Repositories
             _roleManager = roleManager;
         }
 
-      
-        public async Task<object> LogInAsync(LogInVM model,HttpContext httpContext)
+
+        public async Task<object> LogInAsync(LogInVM model, HttpContext httpContext)
         {
             // Tìm người dùng qua email
             var user = await _userManager.FindByEmailAsync(model.Email);
@@ -38,7 +38,7 @@ namespace WebAppNet2.Repositories
             {
                 return null;
             }
-           
+
             // Đăng nhập thành công: lưu thông tin vào Session
             httpContext.Session.SetString("UserID", user.Id);
             httpContext.Session.SetString("UserEmail", user.Email);
@@ -47,13 +47,14 @@ namespace WebAppNet2.Repositories
             var userRoles = await _userManager.GetRolesAsync(user);
             httpContext.Session.SetString("UserRoles", string.Join(",", userRoles));
 
-            return new   {
+            return new
+            {
                 userId = user.Id,
                 email = user.Email,
                 roles = userRoles,
 
             };
-             
+
         }
 
         public async Task<IdentityResult> RegisterAsync(RegisterVM model)
@@ -89,7 +90,7 @@ namespace WebAppNet2.Repositories
         public async Task LogOutAsync()
         {
             await _signInManager.SignOutAsync();
-            
+
         }
     }
 }

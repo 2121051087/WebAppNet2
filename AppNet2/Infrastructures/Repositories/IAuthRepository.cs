@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WebAppNet2.Models.Auth;
 
-namespace WebAppNet2.Repositories
+namespace WebAppNet2.Infrastructures.Repositories
 {
     public interface IAuthRepository
     {

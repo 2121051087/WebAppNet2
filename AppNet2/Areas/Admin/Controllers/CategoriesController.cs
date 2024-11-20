@@ -1,0 +1,139 @@
+﻿using AppNet2.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAppNet2.Infrastructures.UnitOfWork;
+using WebAppNet2.Models;
+using WebAppNet2.Models.DTO;
+using WebAppNet2.Models.Entities.Catalog;
+
+namespace WebAppNet2.Areas.Admin.Controllers
+{
+    [Area("Admin")]
+
+    public class CategoriesController : Controller
+    {
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CategoriesController(IUnitOfWork unitOfWork)
+        {
+            _unitOfWork = unitOfWork;
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var category = await _unitOfWork.CategoriesRepository.GetCategories();
+
+
+            return View(category);
+        }
+
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(CategoriesVM model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                await _unitOfWork.CategoriesRepository.AddCategory(model);
+                await _unitOfWork.SaveChangeAsync();
+                return RedirectToAction("Index");
+            }
+            ModelState.AddModelError("", "Error");
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(Guid? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var category = await _unitOfWork.CategoriesRepository.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Guid? id, Categories categories)
+        {
+           
+            if (id == null)
+            {
+                return NotFound();
+            }
+            ModelState.Remove("CategoryID");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _unitOfWork.CategoriesRepository.UpdateCategory(id,categories);
+                    await _unitOfWork.SaveChangeAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    var exist = _unitOfWork.CategoriesRepository.GetCategoryById(id);
+
+                    if (exist == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index");
+            }
+            return View(categories);
+
+
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(Guid? id)
+        {
+        
+            if(id == null)
+            {
+            return NotFound();
+            }
+            var category = await _unitOfWork.CategoriesRepository.GetCategoryById(id);
+
+            if(category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+        [HttpPost]
+
+        public async Task<IActionResult> Delete(Guid id)
+        {
+           
+            var category = await _unitOfWork.CategoriesRepository.GetCategoryById(id);
+
+            if(category == null)
+            {
+                return NotFound();
+            }
+            await _unitOfWork.CategoriesRepository.DeleteCategory(id);
+            await _unitOfWork.SaveChangeAsync();
+            return RedirectToAction("Index");
+        }
+
+
+    }
+}

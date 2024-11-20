@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebAppNet2.Infrastructures.Repositories;
 using WebAppNet2.Models.Auth;
-using WebAppNet2.Repositories;
 
 namespace WebAppNet2.Controllers
 {

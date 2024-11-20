@@ -1,10 +1,12 @@
 ﻿using AppNet2.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using WebAppNet2.Repositories;
+using WebAppNet2.Infrastructures.Repositories;
+using WebAppNet2.Infrastructures.UnitOfWork;
+using WebAppNet2.Models.Entities.Catalog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,29 +36,30 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true; // Cookie chỉ được truy cập qua HTTP
     options.Cookie.IsEssential = true; // Bắt buộc lưu trữ cookie
 });
-// Authentication
-builder.Services.AddAuthentication(option =>
-{
-    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.SaveToken = true;
-    options.RequireHttpsMetadata = false;
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
-    };
-});
+// 
+
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+builder.Services.AddScoped<IUnitOfWork, DbNet2UnitOfWork>();
+
+
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<DbNet2Context>();
+        Sizes.SeedDefaultSizes(context);
+        Colors.SeedDefaultColors(context);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+    }
+}
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
