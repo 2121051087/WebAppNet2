@@ -2,7 +2,7 @@
 {
     public class ProductsVM
     {
-
+        public Guid ProductID { get; set; }
         public string ProductName { get; set; }
 
         public string? ProductDescription { get; set; }
@@ -16,7 +16,6 @@
 
     public class ColorSidesDTO
     {
-
         public int ColorID { get; set; }
         public int SizeID { get; set; }
         public int Quantity { get; set; }
