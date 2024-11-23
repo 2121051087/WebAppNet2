@@ -20,9 +20,9 @@
         </dd>
     </dl>
     
-    <form asp-action="@Url.Action("Delete",  "Categories" , new{area ="Admin"})"  method="post">
-        <input type="hidden" asp-for="CategoryID" name ="CategoryID"/>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="CategoryID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="@Url.Action("Index", "Categories" , new{area ="Admin"})">Back to List</a>
+        <a asp-action="Index">Back to List</a>
     </form>
 </div>

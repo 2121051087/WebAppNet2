@@ -46,24 +46,38 @@ namespace WebAppNet2.Infrastructures.Repositories
         }
 
 
-        public async Task<Categories> UpdateCategory(Guid? id,Categories categories)
+        public async Task<Categories> UpdateCategory(Guid? id,CategoriesVM model)
         {
-           var category = GetCategoryById(id);
-           if (category == null)
+           var category = await _context.Categories.FindAsync(id);
+            if (category == null)
             {
                 return null;
             }
-            _context.Categories.Update(categories);
-            await _context.SaveChangesAsync();
-            return categories;
+            category.CategoryName = model.CategoryName;
+
+             _context.Categories.Update(category);
+            return category;
+          
+           
         }
 
-        public async Task<Categories> GetCategoryById (Guid? id)
+        public async Task<CategoriesVM> GetCategoryById (Guid? id)
         {
 
             var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+            {
+                return null;
+            }
 
-            return category;
+            var categoryVM = new CategoriesVM
+            {
+                CategoryName = category.CategoryName,
+                CategoryID = category.CategoryID,
+               
+            };
+
+            return categoryVM;
         }
 
        

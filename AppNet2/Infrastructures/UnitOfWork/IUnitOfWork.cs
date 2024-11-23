@@ -4,7 +4,9 @@ namespace WebAppNet2.Infrastructures.UnitOfWork
 {
     public interface IUnitOfWork
     {
-       ICategoriesRepository CategoriesRepository { get; set; }
+        ICategoriesRepository CategoriesRepository { get; set; }
+        IProductRepository ProductRepository { get; set; }
+
 
         Task SaveChangeAsync();
     }

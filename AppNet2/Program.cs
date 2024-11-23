@@ -42,6 +42,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<IUnitOfWork, DbNet2UnitOfWork>();
+builder.Services.AddScoped<IProductRepository , ProductRepository>();
 
 
 var app = builder.Build();

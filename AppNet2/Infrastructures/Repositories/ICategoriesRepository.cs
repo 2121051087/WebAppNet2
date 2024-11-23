@@ -9,11 +9,11 @@ namespace WebAppNet2.Infrastructures.Repositories
 
         public Task<Categories> AddCategory(CategoriesVM model);
 
-        public Task<Categories> UpdateCategory(Guid? id, Categories categories);
+        public Task<Categories> UpdateCategory(Guid? id,CategoriesVM model);
 
         public Task<Categories> DeleteCategory(Guid id);
 
-        public Task<Categories> GetCategoryById(Guid? id);
+        public Task<CategoriesVM> GetCategoryById(Guid? id);
 
       
     }

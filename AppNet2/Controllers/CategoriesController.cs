@@ -1,16 +1,12 @@
-﻿using AppNet2.Models;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAppNet2.Infrastructures.UnitOfWork;
-using WebAppNet2.Models;
 using WebAppNet2.Models.DTO;
 using WebAppNet2.Models.Entities.Catalog;
 
-namespace WebAppNet2.Areas.Admin.Controllers
+namespace WebAppNet2.Controllers
 {
-    [Area("Admin")]
-
+    [Route("Admin/[Controller]/[Action]")]
     public class CategoriesController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -18,8 +14,8 @@ namespace WebAppNet2.Areas.Admin.Controllers
         public CategoriesController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
-        }
 
+        }
 
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -50,7 +46,7 @@ namespace WebAppNet2.Areas.Admin.Controllers
             return View(model);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -66,20 +62,20 @@ namespace WebAppNet2.Areas.Admin.Controllers
             return View(category);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Edit(Guid? id, Categories categories)
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Edit(Guid? id,CategoriesVM model)
         {
-           
+
             if (id == null)
             {
                 return NotFound();
             }
-            ModelState.Remove("CategoryID");
+           // ModelState.Remove("CategoryID");
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _unitOfWork.CategoriesRepository.UpdateCategory(id,categories);
+                    await _unitOfWork.CategoriesRepository.UpdateCategory(id, model);
                     await _unitOfWork.SaveChangeAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -97,38 +93,32 @@ namespace WebAppNet2.Areas.Admin.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return View(categories);
+            return View(model);
 
 
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> Delete(Guid? id)
         {
-        
-            if(id == null)
+
+            if (id == null)
             {
-            return NotFound();
+                return NotFound();
             }
             var category = await _unitOfWork.CategoriesRepository.GetCategoryById(id);
 
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }
             return View(category);
         }
-        [HttpPost]
+        [HttpPost("{id}")]
 
         public async Task<IActionResult> Delete(Guid id)
         {
-           
-            var category = await _unitOfWork.CategoriesRepository.GetCategoryById(id);
 
-            if(category == null)
-            {
-                return NotFound();
-            }
             await _unitOfWork.CategoriesRepository.DeleteCategory(id);
             await _unitOfWork.SaveChangeAsync();
             return RedirectToAction("Index");
@@ -137,3 +127,4 @@ namespace WebAppNet2.Areas.Admin.Controllers
 
     }
 }
+

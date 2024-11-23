@@ -2,6 +2,7 @@
 {
     public class CategoriesVM
     {
+        public Guid CategoryID { get; set; } 
         public string CategoryName { get; set; } = null!;
     }
 }
