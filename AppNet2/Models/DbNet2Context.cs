@@ -81,7 +81,7 @@ namespace AppNet2.Models
                       .HasForeignKey(cs => cs.ColorID)
                       .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(cs => cs.sizes)
+                entity.HasOne(cs => cs.Sizes)
                       .WithMany(s => s.ColorSizes)
                       .HasForeignKey(cs => cs.SizeID)
                       .OnDelete(DeleteBehavior.Restrict);

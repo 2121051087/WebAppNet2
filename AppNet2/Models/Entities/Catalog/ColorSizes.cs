@@ -24,7 +24,7 @@ namespace WebAppNet2.Models.Entities.Catalog
         [JsonIgnore]
         public Products Product { get; set; }
         [JsonIgnore]
-        public Sizes sizes { get; set; }
+        public Sizes Sizes { get; set; }
         [JsonIgnore]
         public Colors Color { get; set; }
 

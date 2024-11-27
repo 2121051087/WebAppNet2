@@ -1,41 +1,4 @@
-html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
-  margin-bottom: 60px;
-}
-#layoutAuthentication {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-    #layoutAuthentication #layoutAuthentication_content {
-        min-width: 0;
-        flex-grow: 1;
-    }
-
-    #layoutAuthentication #layoutAuthentication_footer {
-        min-width: 0;
-    }
-
-#layoutSidenav {
+﻿#layoutSidenav {
     display: flex;
 }
 
@@ -137,10 +100,6 @@ body {
     #layoutError #layoutError_footer {
         min-width: 0;
     }
-
-.img-error {
-    max-width: 20rem;
-}
 
 .nav .nav-link .sb-nav-link-icon,
 .sb-sidenav-menu .nav-link .sb-nav-link-icon {
@@ -295,8 +254,31 @@ body {
         background-color: #e9ecef;
     }
 
-    <!---->
+/* Ẩn sidebar khi có lớp sb-sidenav-toggled */
+body.sb-sidenav-toggled #layoutSidenav_nav {
+    display: none;
+}
 
-.my-custom-user {
-    color: blue;
+/* Khi sidebar bị ẩn, làm cho content body chiếm hết không gian */
+body.sb-sidenav-toggled #layoutSidenav_content {
+    margin-left: 0;
+    width: 100%;
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* Trước khi toggle, layout có sidebar */
+#layoutSidenav_nav {
+    width: 250px; /* hoặc chiều rộng thực tế của sidebar */
+}
+
+/* Trước khi toggle, content body có margin-left để tránh bị che khuất */
+#layoutSidenav_content {
+    margin-left: 250px; /* Chiều rộng của sidebar */
+    width: calc(100% - 250px); /* Đảm bảo content không bị che khuất */
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+/* Đảm bảo khi sidebar toggle lại thì content trở lại đúng vị trí */
+body.sb-sidenav-toggled #layoutSidenav_content {
+    transition: margin-left 0.3s ease, width 0.3s ease;
 }

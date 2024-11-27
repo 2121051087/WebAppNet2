@@ -1,0 +1,109 @@
+﻿@model WebAppNet2.Models.DTO.ProductsVM
+
+@{
+    ViewData["Title"] = "Create Product";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1>Tạo sản phẩm mới</h1>
+
+<form asp-action="Create" method="post" class="row" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group col-5 m-2">
+        <label asp-for="ProductName" class="control-label">Tên sản phẩm</label>
+        <input asp-for="ProductName" class="form-control" />
+        <span asp-validation-for="ProductName" class="text-danger"></span>
+    </div>
+    <div class="form-group col-5 m-2">
+        <label asp-for="ProductDescription" class="control-label">Mô tả</label>
+        <input asp-for="ProductDescription" class="form-control" />
+        <span asp-validation-for="ProductDescription" class="text-danger"></span>
+    </div>
+    <div class="form-group col-5 d-flex align-items-center m-3">
+
+        <label asp-for="Price" class="control-label me-3">Giá</label>
+
+        <input asp-for="Price" class="form-control w-25" type="number" />
+       
+        <span asp-validation-for="Price" class="text-danger"></span>
+        
+    </div>
+    <div class="form-group col-5 d-flex align-items-center m-3" >
+
+        <label asp-for="CategoryID" class="control-label me-3"> Danh mục </label>
+        <select asp-for="CategoryID" class="form-group w-55" asp-items="ViewBag.Categories">
+            <option value="">-- Lựa chọn danh mục  --</option>
+        </select>
+    </div>
+    <div class="form-group col-8  d-flex align-items-center m-3">
+        <label asp-for="ImagePath" class="control-label w-25"> Chọn ảnh </label>
+        <input asp-for="ImagePath" type="file" class="form-control" id="fileInput" />
+    </div>
+
+
+
+    <div id="colorSizesContainer" class="form-group col-12"> </div>
+    <button type="button" id="addColorSize" class="btn btn-success col-2 m-2">Thêm màu/kích cỡ</button>
+
+    <div class="form-group ">
+        <input type="submit" value="Thêm sản phẩm" class="btn btn-primary" />
+    </div>
+</form>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const colorSizesContainer = document.getElementById('colorSizesContainer');
+        const addColorSizeButton = document.getElementById('addColorSize');
+
+        // Chuyển ViewBag dữ liệu thành JSON
+        const colors = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Colors));
+        const sizes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Sizes));
+
+        console.log('Colors:', colors); // Kiểm tra cấu trúc dữ liệu
+        console.log('Sizes:', sizes);   // Kiểm tra cấu trúc dữ liệu
+
+        addColorSizeButton.addEventListener('click', function () {
+            const index = colorSizesContainer.children.length;
+
+            const newItem = document.createElement('div');
+            newItem.className = 'form-group color-sizes-item m-1';
+
+            // Tạo HTML cho phần tử mới, sử dụng dữ liệu JSON để tạo các option
+            const colorOptions = colors.map(c => `<option value="${c.Value}">${c.Text}</option>`).join('');
+            const sizeOptions = sizes.map(s => `<option value="${s.Value}">${s.Text}</option>`).join('');
+            newItem.innerHTML = `
+                <div class="row">
+                    <div class="col-2">
+                        <select name="colorSizesDTO[${index}].ColorID" class="form-control">
+                            <option>Chọn màu</option>
+                            ${colorOptions}
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <select name="colorSizesDTO[${index}].SizeID" class="form-control">
+                            <option>Chọn kích cỡ</option>
+                            ${sizeOptions}
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <input name="colorSizesDTO[${index}].Quantity" class="form-control" type="number" placeholder="Số lượng" />
+                    </div>
+                    <div class="col-2">
+                        <button type="button" class="btn btn-danger remove-item">Xóa</button>
+                    </div>
+                </div>
+            `;
+
+            // Thêm sự kiện cho nút xóa ngay sau khi phần tử mới được tạo
+            const removeButton = newItem.querySelector('.remove-item');
+            removeButton.addEventListener('click', function () {
+                colorSizesContainer.removeChild(newItem);
+            });
+
+            colorSizesContainer.appendChild(newItem);
+        });
+    });
+
+</script>
+
