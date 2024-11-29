@@ -6,7 +6,7 @@ namespace WebAppNet2.Models.DTO
 {
     public class ProductsVM
     {
-        public Guid ProductID { get; set; }
+        public Guid? ProductID { get; set; }
 
         [DisplayName("Tên sản phẩm")]
         public string ProductName { get; set; }
@@ -15,6 +15,8 @@ namespace WebAppNet2.Models.DTO
         public string? ProductDescription { get; set; }
 
         [DisplayName("Giá")]
+
+        
         public double Price { get; set; }
 
         public IFormFile? ImagePath { get; set; }
@@ -23,26 +25,29 @@ namespace WebAppNet2.Models.DTO
         [DisplayName("Ảnh")]
         public string? CurrentImagePath { get; set; }
 
-        [DisplayName("Ngày lập")]
-        public DateTime UpdatedAt { get; set; }
+        [DisplayName("Ngày cập nhật")]
+        public DateTime? UpdatedAt { get; set; }
         [DisplayName("Danh mục")]
         public string? CategoryName { get; set; }
 
         [DisplayName("Thông số")]
-        public List<ColorSidesDTO> colorSizesDTO { get; set; } = null!;
+        public List<ColorSizesDTO> colorSizesDTO { get; set; } = null!;
 
 
+        // Thêm thuộc tính cho dữ liệu JSON để gửi xuống View
+        //public string? ColorSizesDTOJson { get; set; }
 
     }
 
-    public class ColorSidesDTO
+    public class ColorSizesDTO
     {
+        public Guid? ColorSizesID { get; set; }
         public Guid ColorID { get; set; }   
         public Guid SizeID { get; set; }
         public int Quantity { get; set; }
 
-        public string ColorName { get; set; }
-        public string SizeName { get; set;}
+        public string? ColorName { get; set; }
+        public string? SizeName { get; set; }
     }
    
 }    

@@ -24,7 +24,7 @@
 
         <label asp-for="Price" class="control-label me-3">Giá</label>
 
-        <input asp-for="Price" class="form-control w-25" type="number" />
+        <input asp-for="Price" class="form-control w-25" type="number" min="0"/>
        
         <span asp-validation-for="Price" class="text-danger"></span>
         
@@ -87,7 +87,7 @@
                         </select>
                     </div>
                     <div class="col-2">
-                        <input name="colorSizesDTO[${index}].Quantity" class="form-control" type="number" placeholder="Số lượng" />
+                        <input name="colorSizesDTO[${index}].Quantity" class="form-control" type="number" placeholder="Số lượng" min="0"/>
                     </div>
                     <div class="col-2">
                         <button type="button" class="btn btn-danger remove-item">Xóa</button>

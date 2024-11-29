@@ -1,4 +1,4 @@
-﻿
+﻿  
 using AppNet2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +80,11 @@ namespace WebAppNet2.Infrastructures.Repositories
             return categoryVM;
         }
 
+        public async Task<List<Products>> GetProductsByCategory(Guid? id)
+        {
+            var products = await _context.Products.Where(p => p.CategoryID == id).ToListAsync();
+            return products;
+        }
        
         
     }

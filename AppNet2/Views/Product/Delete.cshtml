@@ -1,0 +1,58 @@
+﻿@model WebAppNet2.Models.DTO.ProductsVM
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+
+
+<h2 class="m-3">Bạn có chắc muốn xóa sản phẩm này không ?</h2>
+<div>
+
+    <hr />
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ProductName)</th>
+                <td>@Html.DisplayFor(model => model.ProductName)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.ProductDescription)</th>
+                <td>@Html.DisplayFor(model => model.ProductDescription)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Price )</th>
+                <td>@Html.DisplayFor(model => model.Price )</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.CurrentImagePath)</th>
+                <td>
+                    @Html.Raw($"<img src='{Model.CurrentImagePath}' alt='Ảnh sản phẩm' class='img-thumbnail' style='width: 80px; height: 80px; object-fit: cover;' />")
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.CategoryName)</th>
+                <td>@Html.DisplayFor(model => model.CategoryName)</td>
+            </tr>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.colorSizesDTO)</th>
+                <td>
+                    @foreach (var item in Model.colorSizesDTO)
+                    {
+                        <div>
+                            <span>Màu: @item.ColorName</span> |
+                            <span>Kích cỡ: @item.SizeName</span> |
+                            <span>Số lượng: @item.Quantity</span> 
+                        </div>
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="ProductID" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </form>
+</div>

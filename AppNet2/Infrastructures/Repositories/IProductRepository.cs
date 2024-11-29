@@ -8,7 +8,7 @@ namespace WebAppNet2.Infrastructures.Repositories
         public Task<Products> AddProduct(ProductsVM model);
         public Task<Products> DeleteProduct(Guid id);
         public Task<List<ProductsVM>> GetProducts();
-        public Task<Products> UpdateProduct(Guid? id, Products products);
+        public Task<Products> UpdateProduct(Guid? id, ProductsVM model);
         public Task<ProductsVM> GetProductById(Guid? id);
 
         public Task<List<Colors>> GetColors();

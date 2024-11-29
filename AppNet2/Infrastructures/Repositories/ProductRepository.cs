@@ -1,5 +1,6 @@
 ﻿using AppNet2.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using WebAppNet2.Models.DTO;
 using WebAppNet2.Models.Entities.Catalog;
 
@@ -71,32 +72,63 @@ namespace WebAppNet2.Infrastructures.Repositories
             return product;
         } 
 
-        public Task<Products> DeleteProduct(Guid id)
+        public async Task<Products> DeleteProduct(Guid id)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
+            {
+                return null;
+            }
+            if (!string.IsNullOrEmpty(product.ImageProduct))
+            {
+                string filePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", Path.GetFileName(product.ImageProduct));
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+            }
+            _context.Products.Remove(product);
+            return product;
         }
 
         public async Task<ProductsVM> GetProductById(Guid? id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductID == id);
 
-            if (product == null)
+            var productColorSize = await _context.ColorSizes
+                .Where(cs => cs.ProductID == id)
+                .Select(cs => new ColorSizesDTO
+                {
+                    ColorSizesID = cs.ColorSizesID,
+                    ColorID = cs.ColorID,
+                    SizeID = cs.SizeID,
+                    Quantity = cs.Quantity,
+                    ColorName = cs.Color.ColorName,
+                    SizeName = cs.Sizes.SizeName
+                }).ToListAsync();
+
+            if (product == null || productColorSize == null)
             {
                 return null;
             }
 
             var productVM = new ProductsVM
             {
-               
+                ProductID = product.ProductID,
                 ProductName = product.ProductName,
                 ProductDescription = product.ProductDescription,
                 Price = product.Price,
                 CurrentImagePath = product.ImageProduct,
                 CategoryID = product.CategoryID,
-               
+                CategoryName = product.Category.CategoryName,
+                UpdatedAt = product.UpdatedAt,
+                colorSizesDTO = productColorSize,
+                //ColorSizesDTOJson = JsonSerializer.Serialize(productColorSize)
             };
+
             return productVM;
         }
+
 
         public async Task<List<ProductsVM>> GetProducts()
         {
@@ -113,7 +145,7 @@ namespace WebAppNet2.Infrastructures.Repositories
             foreach (var item in product)
             {
                 var productColorSizes = colorSizes.Where(cs => cs.ProductID == item.ProductID)
-                                                   .Select(cs => new ColorSidesDTO
+                                                   .Select(cs => new ColorSizesDTO
                                                    {
                                                        ColorID = cs.ColorID,
                                                        SizeID = cs.SizeID,
@@ -152,9 +184,107 @@ namespace WebAppNet2.Infrastructures.Repositories
             return sizes;
         }
 
-        public Task<Products> UpdateProduct(Guid? id, Products products)
+        public async Task<Products> UpdateProduct(Guid? id, ProductsVM model)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.Include(p => p.ColorSizes).FirstOrDefaultAsync(p => p.ProductID == id);
+            if (product == null)
+            {
+                return null;
+            }
+
+            // Update basic fields
+            product.ProductName = model.ProductName;
+            product.ProductDescription = model.ProductDescription;
+            product.Price = model.Price;
+            product.CategoryID = model.CategoryID;
+            product.UpdatedAt = DateTime.UtcNow.AddHours(7);
+
+            // Handle Image update if needed
+            if (model.ImagePath != null)
+            {
+                if (!string.IsNullOrEmpty(product.ImageProduct))
+                {
+                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", product.ImageProduct);
+                    if (System.IO.File.Exists(oldImagePath))
+                    {
+                        System.IO.File.Delete(oldImagePath);
+                    }
+                }
+
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images");
+                string uniqueFileName = $"{Guid.NewGuid()}_{model.ImagePath.FileName}";
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await model.ImagePath.CopyToAsync(fileStream);
+                }
+
+                product.ImageProduct = $"/images/{uniqueFileName}";
+            }
+
+            // Handle ColorSizes
+            var currentColorSizes = await _context.ColorSizes
+                .Where(cs => cs.ProductID == product.ProductID)
+                .ToListAsync();
+
+            var colorSizesIDsInDTO = model.colorSizesDTO
+                .Where(cs => cs.ColorSizesID != Guid.Empty)
+                .Select(cs => cs.ColorSizesID)
+                .ToList();
+
+            // Remove ColorSizes that are no longer in the model
+            foreach (var colorSize in currentColorSizes)
+            {
+                if (!colorSizesIDsInDTO.Contains(colorSize.ColorSizesID))
+                {
+                    _context.ColorSizes.Remove(colorSize);
+                }
+            }
+
+            // Add or update ColorSizes
+            foreach (var colorSize in model.colorSizesDTO)
+            {
+                if (colorSize.ColorSizesID != Guid.Empty)
+                {
+                    // Update existing ColorSize
+                    var existColorSize = await _context.ColorSizes
+                        .FirstOrDefaultAsync(cs => cs.ColorSizesID == colorSize.ColorSizesID);
+
+                    if (existColorSize != null)
+                    {
+                        existColorSize.ColorID = colorSize.ColorID;
+                        existColorSize.SizeID = colorSize.SizeID;
+                        existColorSize.Quantity = colorSize.Quantity;
+                        _context.ColorSizes.Update(existColorSize);
+                    }
+                }
+                else if (colorSize.ColorID != Guid.Empty && colorSize.SizeID != Guid.Empty)
+                {
+                    // Add new ColorSize
+                    var newColorSize = new ColorSizes
+                    {
+                        ColorSizesID = Guid.NewGuid(),
+                        ColorID = colorSize.ColorID,
+                        SizeID = colorSize.SizeID,
+                        ProductID = product.ProductID,
+                        Quantity = colorSize.Quantity
+                    };
+                    await _context.ColorSizes.AddAsync(newColorSize);
+                }
+            }
+
+            await _context.SaveChangesAsync();  // Save changes to the database
+
+            return product;
         }
+
+
+
     }
 }

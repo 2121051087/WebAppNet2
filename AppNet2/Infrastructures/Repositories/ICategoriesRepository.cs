@@ -15,6 +15,9 @@ namespace WebAppNet2.Infrastructures.Repositories
 
         public Task<CategoriesVM> GetCategoryById(Guid? id);
 
-      
+        public Task<List<Products>> GetProductsByCategory(Guid? id);
+
+
+
     }
 }

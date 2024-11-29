@@ -1,0 +1,193 @@
+﻿@using WebAppNet2.Models.DTO
+@model WebAppNet2.Models.DTO.ProductsVM
+
+@{
+    ViewData["Title"] = "Cập nhật sản phẩm";
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
+}
+
+<h1 class="m-3">Cập nhật sản phẩm</h1>
+<hr />
+
+<div class="row">
+    <div class="col-11">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProductID" />
+
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <!-- Các trường thông tin sản phẩm -->
+                    <!-- Tên sản phẩm -->
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.ProductName)</th>
+                        <td>
+                            @Html.TextBoxFor(p => p.ProductName, new { @class = "form-control" })
+                        </td>
+                    </tr>
+
+                    <!-- Mô tả sản phẩm -->
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.ProductDescription)</th>
+                        <td>
+                            @Html.TextBoxFor(p => p.ProductDescription, new { @class = "form-control" })
+                        </td>
+                    </tr>
+
+                    <!-- Giá sản phẩm -->
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Price)</th>
+                        <td>
+                            @Html.TextBoxFor(p => p.Price, new { @class = "form-control", type = "number", min = "0" })
+                        </td>
+                    </tr>
+
+                    <!-- Dropdown Danh mục -->
+                    <tr>
+                        <th>@Html.DisplayName("Danh mục")</th>
+                        <td>
+                            <select asp-for="CategoryID" class="form-control" asp-items="ViewBag.Categories">
+                                <option value="">Chọn danh mục</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <!-- Ảnh hiện tại -->
+                    <tr>
+                        <th>@Html.DisplayName("Ảnh")</th>
+                        <td>
+                            <img src="@Url.Content(Model.CurrentImagePath)" alt="Ảnh sản phẩm hiện tại" style="max-width: 100px;">
+                        </td>
+                    </tr>
+
+                    <!-- Ảnh mới -->
+                    <tr>
+                        <th>Chọn ảnh mới</th>
+                        <td>
+                            <input type="file" asp-for="ImagePath" class="form-control" />
+                        </td>
+                    </tr>
+
+                    <!-- Thông số màu và kích cỡ -->
+                    <tr>
+                        <th>@Html.DisplayName("Thông số màu và kích cỡ")</th>
+                        <td>
+                            <div id="colorSizesContainer" class="form-group col-12">
+                                <!-- Các dòng màu/kích cỡ sẽ được thêm vào đây bằng JavaScript -->
+                            </div>
+                            <button type="button" id="addColorSize" class="btn btn-success col-3 m-2">Thêm màu/kích cỡ</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">Lưu thay đổi</button>
+        </form>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const colorSizesContainer = document.getElementById('colorSizesContainer');
+        const addColorSizeButton = document.getElementById('addColorSize');
+
+        // Lấy data từ Model.colorSizesDTO
+        const colorSizesDTO = JSON.parse('@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.colorSizesDTO ?? new List<WebAppNet2.Models.DTO.ColorSizesDTO>()))');
+        console.log('ColorSizesDTO:', colorSizesDTO);
+
+        // Lấy danh sách màu và kích cỡ từ ViewBag
+        const colors = JSON.parse('@Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Colors))');
+        const sizes = JSON.parse('@Html.Raw(System.Text.Json.JsonSerializer.Serialize(ViewBag.Sizes))');
+
+        console.log('Colors:', colors);
+        console.log('Sizes:', sizes);
+
+        // Biến để theo dõi index của các dòng đã được thêm
+        let currentIndex = colorSizesDTO.length;
+
+        // Hàm render dữ liệu có sẵn
+        function renderExistingColorSizes(data) {
+            data.forEach((item, index) => {
+                addColorSizeRow(item, index);
+            });
+        }
+
+        // Thêm dòng màu/kích cỡ mới
+        function addColorSizeRow(item = {}, index = currentIndex++) {
+            const newItem = document.createElement('div');
+            newItem.className = 'row color-sizes-item m-1';
+
+            // Tạo danh sách option màu
+            const colorOptions = colors.map(c =>
+                `<option value="${c.Value}" ${c.Value === item.ColorID ? 'selected' : ''}>${c.Text}</option>`
+            ).join('');
+
+            // Tạo danh sách option kích cỡ
+            const sizeOptions = sizes.map(s =>
+                `<option value="${s.Value}" ${s.Value === item.SizeID ? 'selected' : ''}>${s.Text}</option>`
+            ).join('');
+
+            // HTML cho dòng mới
+            newItem.innerHTML = `
+                <input type="hidden" name="ColorSizesDTO[${index}].ColorSizesID" value="${item.ColorSizesID || '00000000-0000-0000-0000-000000000000'}" />
+                <div class="col-3">
+                    <select name="ColorSizesDTO[${index}].ColorID" class="form-control">
+                        <option value="">Chọn màu</option>
+                        ${colorOptions}
+                    </select>
+                </div>
+                <div class="col-3">
+                    <select name="ColorSizesDTO[${index}].SizeID" class="form-control">
+                        <option value="">Chọn kích cỡ</option>
+                        ${sizeOptions}
+                    </select>
+                </div>
+                <div class="col-2">
+                    <input type="number" name="ColorSizesDTO[${index}].Quantity" class="form-control" value="${item.Quantity || ''}" min="0">
+                </div>
+                <div class="col-1">
+                    <button type="button" class="btn btn-danger remove-row">Xóa</button>
+                </div>
+            `;
+
+            colorSizesContainer.appendChild(newItem);
+        }
+
+        // Xử lý sự kiện khi nhấn nút "Thêm màu/kích cỡ"
+        addColorSizeButton.addEventListener('click', function () {
+            addColorSizeRow();
+            // Cập nhật lại model sau khi thêm dòng mới
+            updateModel();
+        });
+
+        // Hàm cập nhật model dữ liệu
+        function updateModel() {
+            const colorSizesDTO = [];
+            const rows = document.querySelectorAll('.color-sizes-item');
+            rows.forEach((row, index) => {
+                const colorID = row.querySelector('[name="ColorSizesDTO[' + index + '].ColorID"]').value;
+                const sizeID = row.querySelector('[name="ColorSizesDTO[' + index + '].SizeID"]').value;
+                const quantity = row.querySelector('[name="ColorSizesDTO[' + index + '].Quantity"]').value;
+                colorSizesDTO.push({ ColorID: colorID, SizeID: sizeID, Quantity: quantity });
+            });
+
+            console.log(colorSizesDTO);
+            // Cập nhật lại dữ liệu gửi lên model
+            // (Có thể bạn muốn truyền colorSizesDTO vào một trường hidden hoặc ViewBag tại đây)
+        }
+
+        // Xử lý xóa dòng
+        colorSizesContainer.addEventListener('click', function (e) {
+            if (e.target.classList.contains('remove-row')) {
+                e.target.closest('.color-sizes-item').remove();
+                // Cập nhật lại model sau khi xóa
+                updateModel();
+            }
+        });
+
+        // Gọi render dữ liệu ban đầu nếu có
+        renderExistingColorSizes(colorSizesDTO);
+    });
+
+</script>

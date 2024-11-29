@@ -5,16 +5,16 @@
     Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Danh mục</h1>
 
 <p>
-    <a href="@Url.Action("Create","Categories")" class="btn btn-primary">Create New</a>
+    <a href="@Url.Action("Create","Categories")" class="btn btn-primary">Thêm danh mục</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.CategoryName)
+                @Html.DisplayName("Tên danh mục")
             </th>
             <th></th>
         </tr>
@@ -27,9 +27,9 @@
                     @Html.DisplayFor(modelItem => item.CategoryName)
                 </td>
                 <td>
-                    <a href="@Url.Action("Edit","Categories",new{id = item.CategoryID})" class="btn btn-warning ">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.CategoryID" class=" btn btn-success">Details</a> |
-                    <a href="@Url.Action("Delete","Categories",new{id = item.CategoryID})" class="btn btn-danger">Delete</a>
+                    <a href="@Url.Action("Edit","Categories",new{id = item.CategoryID})" class="btn btn-warning ">Cập nhật</a> |
+                    <a asp-action="Details" asp-route-id="@item.CategoryID" class=" btn btn-success">Chi tiết</a> |
+                    <a href="@Url.Action("Delete","Categories",new{id = item.CategoryID})" class="btn btn-danger">Xóa</a>
                 </td>
             </tr>
         }

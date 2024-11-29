@@ -22,7 +22,7 @@ namespace WebAppNet2.Controllers
         {
             var category = await _unitOfWork.CategoriesRepository.GetCategories();
 
-
+            
             return View(category);
         }
 
