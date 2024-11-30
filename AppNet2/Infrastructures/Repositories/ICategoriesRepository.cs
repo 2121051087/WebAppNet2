@@ -17,7 +17,9 @@ namespace WebAppNet2.Infrastructures.Repositories
 
         public Task<List<Products>> GetProductsByCategory(Guid? id);
 
+        public Task<int> CountNumberProductByCategory(Guid? id);
 
+        public Task<List<CategoriesVM>> GetAllCategories();
 
     }
 }

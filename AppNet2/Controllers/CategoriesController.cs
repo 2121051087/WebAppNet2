@@ -20,10 +20,11 @@ namespace WebAppNet2.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var category = await _unitOfWork.CategoriesRepository.GetCategories();
+
+            var categoryVM = await _unitOfWork.CategoriesRepository.GetAllCategories();
 
             
-            return View(category);
+            return View(categoryVM);
         }
 
 

@@ -45,6 +45,17 @@ namespace WebAppNet2.Infrastructures.Repositories
             return result;
         }
 
+        public  async Task<List<CategoriesVM>> GetAllCategories() 
+        { 
+            var result = await _context.Categories.Select(c => new CategoriesVM
+            {
+                CategoryID = c.CategoryID,
+                CategoryName = c.CategoryName,
+                CountNumberProductByCategory = _context.Products.Where(p => p.CategoryID == c.CategoryID).Count()
+            }).ToListAsync();
+
+            return result;
+        }
 
         public async Task<Categories> UpdateCategory(Guid? id,CategoriesVM model)
         {
@@ -74,6 +85,7 @@ namespace WebAppNet2.Infrastructures.Repositories
             {
                 CategoryName = category.CategoryName,
                 CategoryID = category.CategoryID,
+                CountNumberProductByCategory = _context.Products.Where(p => p.CategoryID == category.CategoryID).Count()
                
             };
 
@@ -86,6 +98,13 @@ namespace WebAppNet2.Infrastructures.Repositories
             return products;
         }
        
+      
+        public async Task<int> CountNumberProductByCategory(Guid? id)
+        {
+            var count = await _context.Products.Where(p => p.CategoryID == id).CountAsync();
+
+            return count;
+        }
         
     }
 }
