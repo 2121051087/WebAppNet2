@@ -3,41 +3,124 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AppNet2</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/AppNet2.styles.css" asp-append-version="true" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+
+
+    <style>
+        /* Căn chỉnh chiều cao ul và h1 */
+        .main-navbar .navbar-collapse {
+            display: flex; /* Sử dụng Flexbox */
+            justify-content: center; /* Căn giữa theo chiều ngang */
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        .main-navbar .navbar-nav {
+            display: flex; /* Hiển thị các mục trên một dòng */
+            justify-content: space-evenly; /* Chia đều khoảng cách */
+            align-items: center; /* Căn giữa dọc */
+            width: 100%; /* Chiều ngang full */
+            height: 100%; /* Đảm bảo chiều cao khớp */
+        }
+
+        .main-navbar .nav-item {
+            margin: 0 15px; /* Khoảng cách giữa các mục menu */
+        }
+
+        .main-navbar .nav-link {
+            font-size: 1.2rem; /* Tăng kích thước chữ */
+            padding: 0.5rem 1rem; /* Thêm khoảng cách */
+        }
+
+        .main-navbar .navbar-brand h1 {
+            font-size: 3rem; /* Kích thước logo */
+            margin: 0; /* Loại bỏ khoảng trắng thừa */
+            margin-top: 10%; /* Đẩy logo xuoonsg */
+            line-height: 1; /* Đảm bảo chiều cao khớp */
+        }
+
+        .main-navbar .navbar-brand,
+        .main-navbar .navbar-nav {
+            height: 4rem; /* Đặt chiều cao ul và logo bằng nhau */
+        }
+
+        .custom-secondary {
+            background-color: rgba(108, 117, 125, 0.1); /* Màu secondary Bootstrap với độ trong suốt 10% */
+        }
+
+      
+
+    </style>
+
+
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3 navbar-dark auth-navbar  custom-secondary ">
+            <ul class="navbar-nav ms-auto d-flex align-items-center">
+                <li class="nav-item">
+                    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0 d-flex">
+                        <div class="input-group">
+                            <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
+                            <button class="btn btn-primary" id="btnNavbarSearch" type="button">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item d-flex align-items-center">
+                    <a href="#" class="cart-icon-navbar text-danger position-relative">
+                        <i class="fas fa-shopping-cart" style="font-size: 1.5rem;"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            0
+                        </span>
+                    </a>
+
+                </li>
+                <li class="nav-item ms-3">
+                    <a class="nav-link text-dark btn btn-default" asp-area="" asp-controller="Auth" asp-action="LogIn">Đăng nhập</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark btn btn-default me-5 " asp-area="" asp-controller="Auth" asp-action="Register">Đăng kí</a>
+                </li>
+            </ul>
+        </nav>
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 main-navbar">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AppNet2</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        
-                    </ul>
+
+                <div class="navbar-collapse collapse">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="LogIn">Đăng nhập</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="Register">Đăng kí</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách đổi trả</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                                <h1 class="font-monospace">Teelab</h1>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SizeGuideTable">Bảng Size</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StoreSystem">Hệ thống cửa hàng</a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
+
+
+
     </header>
     <div class="container">
         <main role="main" class="pb-3">
@@ -47,7 +130,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2024 - AppNet2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2024 - Teelab - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

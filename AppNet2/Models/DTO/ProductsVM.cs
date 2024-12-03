@@ -46,6 +46,7 @@ namespace WebAppNet2.Models.DTO
         public Guid SizeID { get; set; }
         public int Quantity { get; set; }
 
+        public string? ColorHexCode { get; set; }
         public string? ColorName { get; set; }
         public string? SizeName { get; set; }
     }

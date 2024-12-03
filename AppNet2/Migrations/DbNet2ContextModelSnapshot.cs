@@ -17,7 +17,7 @@ namespace WebAppNet2.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -269,16 +269,22 @@ namespace WebAppNet2.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserID")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CartID");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Carts", (string)null);
                 });
@@ -332,6 +338,9 @@ namespace WebAppNet2.Migrations
                     b.Property<Guid>("ColorID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ColorHexCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ColorName")
                         .IsRequired()
@@ -553,6 +562,13 @@ namespace WebAppNet2.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("WebAppNet2.Models.Entities.Carts.Carts", b =>
+                {
+                    b.HasOne("AppNet2.Models.ApplicationUser", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("ApplicationUserId");
+                });
+
             modelBuilder.Entity("WebAppNet2.Models.Entities.Catalog.ColorSizes", b =>
                 {
                     b.HasOne("WebAppNet2.Models.Entities.Catalog.Colors", "Color")
@@ -567,7 +583,7 @@ namespace WebAppNet2.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("WebAppNet2.Models.Entities.Catalog.Sizes", "sizes")
+                    b.HasOne("WebAppNet2.Models.Entities.Catalog.Sizes", "Sizes")
                         .WithMany("ColorSizes")
                         .HasForeignKey("SizeID")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -577,7 +593,7 @@ namespace WebAppNet2.Migrations
 
                     b.Navigation("Product");
 
-                    b.Navigation("sizes");
+                    b.Navigation("Sizes");
                 });
 
             modelBuilder.Entity("WebAppNet2.Models.Entities.Catalog.Products", b =>
@@ -616,6 +632,11 @@ namespace WebAppNet2.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("AppNet2.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("Carts");
                 });
 
             modelBuilder.Entity("WebAppNet2.Models.Entities.Carts.Carts", b =>

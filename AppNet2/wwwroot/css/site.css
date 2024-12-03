@@ -8,7 +8,7 @@
         transition: transform 0.15s ease-in-out;
         z-index: 1038;
         transform: translateX(-225px);
-        height: 100vh;
+        
     }
 
     #layoutSidenav #layoutSidenav_content {
@@ -281,4 +281,79 @@ body.sb-sidenav-toggled #layoutSidenav_content {
 /* Đảm bảo khi sidebar toggle lại thì content trở lại đúng vị trí */
 body.sb-sidenav-toggled #layoutSidenav_content {
     transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+<!---->
+.color-option {
+    transition: all 0.3s ease;
+}
+
+.color-option:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+.card-body {
+    padding: 15px;
+}
+
+@media (max-width: 768px) {
+    .product {
+        flex-direction: column;
+    }
+
+    .card {
+        width: 100%;
+    }
+}
+
+@media (min-width: 769px) {
+    .product {
+        flex-wrap: wrap;
+    }
+
+    .card {
+        width: 11rem;
+    }
+}
+/* Cart-icon trong Product */
+.card {
+    position: relative; /* Để sử dụng position của cart-icon */
+}
+
+.cart-icon-product {
+    width: 32px;
+    height: 32px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    color: #107c10;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+/* Ẩn mặc định */
+.cart-icon-product {
+    opacity: 0; /* Ẩn bằng opacity thay vì display */
+    pointer-events: none; /* Vô hiệu hóa click khi ẩn */
+}
+
+/* Hiện khi hover vào sản phẩm */
+.card:hover .cart-icon-product {
+    opacity: 1; /* Hiển thị khi hover */
+    pointer-events: auto; /* Kích hoạt click */
+}
+/* Cart-icon trong Navbar */
+.cart-icon-navbar {
+    display: inline-block; /* Luôn hiển thị */
+}
+.modal-fullscreen-md-down img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+@media (max-width: 768px) {
+    .modal-fullscreen-md-down img {
+        height: auto; /* Cho phép chiều cao tự động phù hợp với màn hình nhỏ */
+    }
 }

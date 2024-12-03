@@ -1,5 +1,131 @@
 ﻿
+@model WebAppNet2.Models.DTO.HomeViewModel
 @{
+    ViewData["Title"] = "TEELAB-dev";
     Layout = "~/Views/Shared/CustomerLayout.cshtml";
 }
-<h1>This os Customer Role</h1>
+
+<div class="row g-3 justify-content-center">
+    @foreach (var item in Model.CategoriesVM)
+    {
+        <div class="col-auto">
+            <div class="p-2 border font-monospace" style="border-radius: 64px;">
+                @item.CategoryName
+            </div>
+        </div>
+    }
+</div>
+
+
+<div id="baner" class="justify-content-center m-3" width="78%" height="39%" ">
+    <img id="slider" class="" src="/images/slider_1.webp" style="width: 100%; height: 100%; object-fit: cover;" />
+
+</div>
+
+<div class="d-flex justify-content-center align-items-center  text-center m-8">
+    <div>
+        <h1 class="m-4">Enjoy Your Youth!</h1>
+        <p>
+            Không chỉ là thời trang, TEELAB còn là “phòng thí nghiệm” của tuổi trẻ - nơi nghiên cứu và cho <br />
+            ra đời nguồn năng lượng mang tên “Youth”. Chúng mình luôn muốn tạo nên những trải nghiệm <br />
+            vui vẻ, năng động và trẻ trung.
+        </p>
+    </div>
+</div>
+
+
+<div>
+    @foreach (var category in Model.ListProductsByCatgory)
+    {
+        <h2>@category.CategoryName</h2>
+        <div class="product w-100 mt-4 d-flex flex-wrap">
+            @foreach (var product in category.Products)
+            {
+                <div class="card mx-3 mb-4 position-relative" style="width: 11rem;">
+                    @if (string.IsNullOrEmpty(@product.CurrentImagePath))
+                    {
+                        <img src="/images/no-image.png" class="card-img-top" alt="..." style="width:100%;height:180px;object-fit: cover;">
+                    }
+                    else
+                    {
+                        <img src="@product.CurrentImagePath" class="card-img-top" alt="..." style="width:100%;height:180px;object-fit: cover;">
+                    }
+
+                    <!-- Icon giỏ hàng -->
+                    <div class="cart-icon-product d-flex justify-content-center align-items-center position-absolute "
+                         style="top: 10px; right: 10px; display: none;">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+
+
+                    <div class="card-body">
+                        <div class="color-options d-flex mt-2 justify-content-center">
+                            @foreach (var colorSize in product.colorSizesDTO)
+                            {
+                                <div class="color-option mx-1"
+                                     title="@colorSize.ColorName"
+                                     style="width: 24px; height: 24px; background-color: @colorSize.ColorHexCode; border: 1px solid #ccc; cursor: pointer; border-radius:12px;"
+                                     onclick="selectColor('@product.ProductID', '@colorSize.ColorID', '@colorSize.ColorHexCode')"
+                                     id="color-@product.ProductID-@colorSize.ColorID">
+                                </div>
+                            }
+
+                        </div>
+                        <h5 class="card-title m-1">@product.ProductName</h5>
+                        <p class="card-text text-danger"><b>@product.Price</b> VNĐ</p>
+                    </div>
+                </div>
+
+            }
+        </div>
+    }
+</div>
+
+
+<script>
+    var images = ["/images/slider_1.webp", "/images/slider_2.webp", "/images/slider_3.webp", "/images/slider_4.webp", "/images/slider_5.webp"];
+    var i = 0;
+    setInterval(function () {
+        i++;
+        if (i == images.length) {
+            i = 0;
+        }
+        document.getElementById("slider").src = images[i];
+    }, 3000);
+
+
+    let selectedColors = {}; // Lưu trạng thái màu đã chọn cho từng sản phẩm
+
+    function selectColor(productID, colorID, colorHexCode) {
+        // Xóa bỏ chọn màu cũ của sản phẩm này
+        if (selectedColors[productID]) {
+            document.getElementById("color-" + productID + "-" + selectedColors[productID]).style.border = "1px solid #ccc";
+        }
+
+        // Đánh dấu màu đã chọn
+        document.getElementById("color-" + productID + "-" + colorID).style.border = "5px solid #107C10";
+        selectedColors[productID] = colorID;
+
+        // Lưu lựa chọn màu hoặc gửi qua AJAX
+        console.log("Sản phẩm:", productID, "Màu đã chọn:", colorHexCode);
+    }
+    // Chọn tất cả các icon trong sản phẩm
+    const productCartIcons = document.querySelectorAll('.cart-icon-product');
+
+    // Logic để xử lý hover (nếu dùng JS thay vì CSS)
+    productCartIcons.forEach(icon => {
+        const card = icon.closest('.card');
+        card.addEventListener('mouseenter', () => {
+            icon.style.opacity = '1';
+        });
+        card.addEventListener('mouseleave', () => {
+            icon.style.opacity = '0';
+        });
+    });
+
+    // Đảm bảo Navbar Cart-icon luôn hiển thị
+    const navbarCartIcon = document.querySelector('.cart-icon-navbar');
+    navbarCartIcon.style.display = 'block';
+
+
+</script>

@@ -18,13 +18,15 @@ namespace WebAppNet2.Infrastructures.Repositories
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ICartRepository _cartRepository;
 
-        public AuthRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
+        public AuthRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager ,ICartRepository cartRepository)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _roleManager = roleManager;
+            _cartRepository = cartRepository;
         }
 
 
@@ -38,6 +40,7 @@ namespace WebAppNet2.Infrastructures.Repositories
             {
                 return null;
             }
+            var cart = await _cartRepository.GetOrCreateCartAsync(user.Id);
 
             // Đăng nhập thành công: lưu thông tin vào Session
             httpContext.Session.SetString("UserID", user.Id);
