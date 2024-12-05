@@ -14,9 +14,10 @@
     }
 </div>
 
-<div id="baner" class="justify-content-center m-3" style="width: 78%; height: 39%;">
-    <img id="slider" src="/images/slider_1.webp" style="width: 100%; height: 100%; object-fit: cover;" />
+<div id="baner" class="m-3" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; margin: 0 auto;">
+    <img id="slider" src="/images/slider_1.webp" style="width: 78%; height: 39%; object-fit: cover;" />
 </div>
+
 
 <div class="d-flex justify-content-center align-items-center text-center m-8">
     <div>
@@ -79,6 +80,7 @@
 </div>
 
 <script>
+
     var images = ["/images/slider_1.webp", "/images/slider_2.webp", "/images/slider_3.webp", "/images/slider_4.webp", "/images/slider_5.webp"];
     var i = 0;
     setInterval(function () {
@@ -121,28 +123,9 @@
             return;
         }
 
-        const cartData = {
-            productID: productID,
-            colorID: selectedColorID,
-            quantity: 1 // Số lượng mặc định
-        };
-
-        fetch('/Cart/AddToCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
-            },
-            body: JSON.stringify(cartData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(`Đã thêm sản phẩm "${productName}" vào giỏ hàng.`);
-                } else {
-                    alert("Có lỗi xảy ra khi thêm vào giỏ hàng.");
-                }
-            })
-            .catch(error => console.error("Error:", error));
+        // Thông báo yêu cầu đăng nhập nếu chưa đăng nhập
+        alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+        window.location.href = "@Url.Action("LogIn","Auth")" // Chuyển hướng đến trang đăng nhập
     }
+
 </script>

@@ -10,6 +10,7 @@ namespace WebAppNet2.Models.DTO
         public string CategoryName { get; set; } = null!;
         public int? CountNumberProductByCategory { get; set; } = 0;
 
+        
         public List<ProductsVM>? Products { get; set; }
 
     }

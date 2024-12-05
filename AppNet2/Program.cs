@@ -46,6 +46,7 @@ builder.Services.AddScoped<IProductRepository , ProductRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 
 
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

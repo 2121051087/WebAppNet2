@@ -26,6 +26,7 @@ namespace WebAppNet2.Controllers
             
             return View(categoryVM);
         }
+        
 
 
         [HttpGet]

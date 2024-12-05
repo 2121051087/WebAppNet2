@@ -70,7 +70,7 @@
                     </form>
                 </li>
                 <li class="nav-item d-flex align-items-center me-5">
-                    <a href="#" class="cart-icon-navbar text-danger position-relative">
+                    <a href="@Url.Action("Index","Cart")" class="cart-icon-navbar text-danger position-relative">
                         <i class="fas fa-shopping-cart" style="font-size: 1.5rem;"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             0
@@ -103,10 +103,10 @@
                 <div class="navbar-collapse collapse">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách đổi trả</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Privacy">Chính sách đổi trả</a>
                         </li>
                         <li class="nav-item">
                             <a class="navbar-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">
@@ -114,10 +114,10 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="SizeGuideTable">Bảng Size</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="SizeGuideTable">Bảng Size</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StoreSystem">Hệ thống cửa hàng</a>
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="StoreSystem">Hệ thống cửa hàng</a>
                         </li>
                     </ul>
                 </div>

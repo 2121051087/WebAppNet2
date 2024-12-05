@@ -287,6 +287,21 @@ namespace WebAppNet2.Infrastructures.Repositories
             return product;
         }
 
+        public async Task<Guid> GetColorSizeID(CartItemDTO model)
+        {
+            var colorSize = await _context.ColorSizes
+                .Where(cs => cs.ProductID == model.ProductID &&
+                             cs.ColorID == model.ColorID &&
+                             cs.SizeID == model.SizeID)
+                .FirstOrDefaultAsync();
+
+            if (colorSize == null)
+            {
+                throw new Exception("Không tìm thấy ColorSizeID phù hợp.");
+            }
+
+            return colorSize.ColorSizesID;
+        }
 
 
     }

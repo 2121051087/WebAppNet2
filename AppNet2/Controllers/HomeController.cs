@@ -12,7 +12,7 @@ namespace AppNet2.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger ,IUnitOfWork unitOfWork)
+        public HomeController(ILogger<HomeController> logger ,IUnitOfWork unitOfWork )
         {
             _unitOfWork = unitOfWork;
             _logger = logger;
@@ -20,6 +20,9 @@ namespace AppNet2.Controllers
 
         public IActionResult Index()
         {
+            //var isUserLoggedIn = HttpContext.Session.GetString("UserId")  != null;
+
+            //ViewBag.IsUserLoggedIn = isUserLoggedIn;
             var model = new HomeViewModel
             {
                 ListProductsByCatgory = _unitOfWork.CategoriesRepository.GetProductsByCategory().Result,

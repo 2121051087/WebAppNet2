@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AppNet2.Models;
+using Microsoft.AspNetCore.Mvc;
+using WebAppNet2.Infrastructures;
 using WebAppNet2.Infrastructures.UnitOfWork;
 using WebAppNet2.Models.DTO;
 
 namespace WebAppNet2.Areas.Customer.Controllers
 {
     [Area("Customer")]
+    [RoleAuthorize(AppRole.Customer)]
     public class HomeController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -13,7 +16,7 @@ namespace WebAppNet2.Areas.Customer.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        
+
         public IActionResult Index()
         {
             var model = new HomeViewModel
@@ -22,9 +25,23 @@ namespace WebAppNet2.Areas.Customer.Controllers
                 CategoriesVM = _unitOfWork.CategoriesRepository.GetAllCategories().Result,
 
             };
+
+
+
             return View(model);
         }
 
+        public IActionResult ProductDetails(Guid id)
+        {
+            var product = _unitOfWork.ProductRepository.GetProductById(id).Result;
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
         public IActionResult Privacy()
         {
             return View();
@@ -34,5 +51,12 @@ namespace WebAppNet2.Areas.Customer.Controllers
         {
             return View();
         }
+
+
+        public IActionResult StoreSystem()
+        {
+            return View();
+        }
     }
 }
+

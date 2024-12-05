@@ -72,12 +72,13 @@
                     </form>
                 </li>
                 <li class="nav-item d-flex align-items-center">
-                    <a href="#" class="cart-icon-navbar text-danger position-relative">
+                    <a id="cartIcon" href="#" class="cart-icon-navbar text-danger position-relative">
                         <i class="fas fa-shopping-cart" style="font-size: 1.5rem;"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                         </span>
                     </a>
+
 
                 </li>
                 <li class="nav-item ms-3">
@@ -138,4 +139,29 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cartIcon = document.getElementById('cartIcon');
+
+        // Giả sử trạng thái đăng nhập được lưu ở đây, thay đổi theo hệ thống của bạn.
+        const isLoggedIn = false; // Giá trị này có thể lấy từ backend hoặc kiểm tra cookie, session.
+
+        cartIcon.addEventListener('click', (event) => {
+            event.preventDefault(); // Ngăn chặn hành động mặc định
+
+            if (!isLoggedIn) {
+                const loginUrl = '/Auth/LogIn'; // Thay đổi URL đăng nhập theo project của bạn
+                const confirmLogin = confirm('Bạn cần đăng nhập để sử dụng giỏ hàng. Bạn có muốn đăng nhập ngay bây giờ?');
+
+                if (confirmLogin) {
+                    window.location.href = loginUrl;
+                }
+            } else {
+                // Chuyển hướng đến giỏ hàng nếu đã đăng nhập
+                window.location.href = '/Cart'; // Thay đổi URL giỏ hàng nếu cần
+            }
+        });
+    });
+</script>
+
 </html>
