@@ -101,6 +101,7 @@ namespace WebAppNet2.Infrastructures.Repositories
                 {
                     ColorSizesID = cs.ColorSizesID,
                     ColorID = cs.ColorID,
+                    ColorHexCode= cs.Color.ColorHexCode,
                     SizeID = cs.SizeID,
                     Quantity = cs.Quantity,
                     ColorName = cs.Color.ColorName,
@@ -123,7 +124,7 @@ namespace WebAppNet2.Infrastructures.Repositories
                 CategoryName = product.Category.CategoryName,
                 UpdatedAt = product.UpdatedAt,
                 colorSizesDTO = productColorSize,
-                //ColorSizesDTOJson = JsonSerializer.Serialize(productColorSize)
+              
             };
 
             return productVM;

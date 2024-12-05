@@ -14,13 +14,11 @@
     }
 </div>
 
-
-<div id="baner" class="justify-content-center m-3" width="78%" height="39%"">
-    <img id="slider" class="" src="/images/slider_1.webp" style="width: 100%; height: 100%; object-fit: cover;" />
-
+<div id="baner" class="justify-content-center m-3" style="width: 78%; height: 39%;">
+    <img id="slider" src="/images/slider_1.webp" style="width: 100%; height: 100%; object-fit: cover;" />
 </div>
 
-<div class="d-flex justify-content-center align-items-center  text-center m-8">
+<div class="d-flex justify-content-center align-items-center text-center m-8">
     <div>
         <h1 class="m-4">Enjoy Your Youth!</h1>
         <p>
@@ -31,7 +29,6 @@
     </div>
 </div>
 
-
 <div>
     @foreach (var category in Model.ListProductsByCatgory)
     {
@@ -40,23 +37,23 @@
             @foreach (var product in category.Products)
             {
                 <div class="card mx-3 mb-4 position-relative" style="width: 11rem;">
-                    @if (string.IsNullOrEmpty(@product.CurrentImagePath))
-                    {
-                        <img src="/images/no-image.png" class="card-img-top" alt="..." style="width:100%;height:180px;object-fit: cover;">
-                    }
-                    else
-                    {
-                        <img src="@product.CurrentImagePath" class="card-img-top" alt="..." style="width:100%;height:180px;object-fit: cover;">
-                    }
+                    <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
+                        @if (string.IsNullOrEmpty(@product.CurrentImagePath))
+                        {
+                            <img src="/images/no-image.png" class="card-img-top" alt="..." style="width: 100%; height: 180px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="@product.CurrentImagePath" class="card-img-top" alt="..." style="width: 100%; height: 180px; object-fit: cover;">
+                        }
+                    </a>
 
                     <!-- Icon giỏ hàng -->
                     <div class="cart-icon-product d-flex justify-content-center align-items-center position-absolute"
-                         style="top: 10px; right: 10px; display: none;"
+                         style="top: 10px; right: 10px; opacity: 0; transition: opacity 0.3s;"
                          onclick="addToCart('@product.ProductID', '@product.ProductName', '@product.Price', selectedColors['@product.ProductID'] || '')">
                         <i class="fas fa-shopping-cart"></i>
                     </div>
-
-
 
                     <div class="card-body">
                         <div class="color-options d-flex mt-2 justify-content-center">
@@ -64,35 +61,33 @@
                             {
                                 <div class="color-option mx-1"
                                      title="@colorSize.ColorName"
-                                     style="width: 24px; height: 24px; background-color: @colorSize.ColorHexCode; border: 1px solid #ccc; cursor: pointer; border-radius:12px;"
+                                     style="width: 24px; height: 24px; background-color: @colorSize.ColorHexCode; border: 1px solid #ccc; cursor: pointer; border-radius: 12px;"
                                      onclick="selectColor('@product.ProductID', '@colorSize.ColorID', '@colorSize.ColorHexCode')"
                                      id="color-@product.ProductID-@colorSize.ColorID">
                                 </div>
                             }
-                            
                         </div>
-                        <h5 class="card-title m-1">@product.ProductName</h5>
+                        <a href="/Product/Details/@product.ProductID" style="text-decoration: none; color: inherit;">
+                            <h5 class="card-title m-1">@product.ProductName</h5>
+                        </a>
                         <p class="card-text text-danger"><b>@product.Price</b> VNĐ</p>
                     </div>
                 </div>
-
             }
         </div>
     }
 </div>
-
 
 <script>
     var images = ["/images/slider_1.webp", "/images/slider_2.webp", "/images/slider_3.webp", "/images/slider_4.webp", "/images/slider_5.webp"];
     var i = 0;
     setInterval(function () {
         i++;
-        if (i == images.length) {
+        if (i === images.length) {
             i = 0;
         }
         document.getElementById("slider").src = images[i];
     }, 3000);
-
 
     let selectedColors = {}; // Lưu trạng thái màu đã chọn cho từng sản phẩm
 
@@ -106,15 +101,12 @@
         document.getElementById("color-" + productID + "-" + colorID).style.border = "5px solid #107C10";
         selectedColors[productID] = colorID;
 
-        // Lưu lựa chọn màu hoặc gửi qua AJAX
         console.log("Sản phẩm:", productID, "Màu đã chọn:", colorHexCode);
     }
-    // Chọn tất cả các icon trong sản phẩm
-    const productCartIcons = document.querySelectorAll('.cart-icon-product');
 
-    // Logic để xử lý hover (nếu dùng JS thay vì CSS)
-    productCartIcons.forEach(icon => {
-        const card = icon.closest('.card');
+    // Xử lý hover để hiển thị icon giỏ hàng
+    document.querySelectorAll('.card').forEach(card => {
+        const icon = card.querySelector('.cart-icon-product');
         card.addEventListener('mouseenter', () => {
             icon.style.opacity = '1';
         });
@@ -123,29 +115,23 @@
         });
     });
 
-    // Đảm bảo Navbar Cart-icon luôn hiển thị
-    const navbarCartIcon = document.querySelector('.cart-icon-navbar');
-    navbarCartIcon.style.display = 'block';
-
     function addToCart(productID, productName, price, selectedColorID) {
         if (!selectedColorID) {
             alert("Vui lòng chọn màu cho sản phẩm này trước khi thêm vào giỏ hàng.");
             return;
         }
 
-        // Tạo dữ liệu để gửi
         const cartData = {
             productID: productID,
             colorID: selectedColorID,
             quantity: 1 // Số lượng mặc định
         };
 
-        // Gửi dữ liệu qua AJAX
         fetch('/Cart/AddToCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value // Nếu dùng CSRF
+                'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
             },
             body: JSON.stringify(cartData)
         })
@@ -159,5 +145,4 @@
             })
             .catch(error => console.error("Error:", error));
     }
-
 </script>

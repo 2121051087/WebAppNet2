@@ -31,10 +31,18 @@ namespace AppNet2.Controllers
                 
             return View(model);
         }
-        //public Task<IActionResult> ProductDetail(Guid ProductID)
-        //{
-        //    return View();
-        //}
+        
+        public IActionResult ProductDetails(Guid id)
+        {
+            var product = _unitOfWork.ProductRepository.GetProductById(id).Result;
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return View(product);
+        }
         public IActionResult Privacy()
         {
             return View();

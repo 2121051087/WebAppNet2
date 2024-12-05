@@ -357,3 +357,37 @@ body.sb-sidenav-toggled #layoutSidenav_content {
         height: auto; /* Cho phép chiều cao tự động phù hợp với màn hình nhỏ */
     }
 }
+.quantity-input {
+    display: flex;
+    align-items: center;
+    width: 120px;
+}
+
+    .quantity-input .btn-decrease,
+    .quantity-input .btn-increase {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #ddd;
+        background-color: #f5f5f5;
+        font-size: 18px;
+        line-height: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+        .quantity-input .btn-decrease:hover,
+        .quantity-input .btn-increase:hover {
+            background-color: #e0e0e0;
+        }
+
+    .quantity-input .form-control {
+        height: 32px;
+        width: 50px;
+        text-align: center;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-left: none;
+        border-right: none;
+    }
