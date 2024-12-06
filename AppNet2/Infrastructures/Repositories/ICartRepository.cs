@@ -8,6 +8,15 @@ namespace WebAppNet2.Infrastructures.Repositories
         public Task<Carts> GetOrCreateCartAsync(string userID);
         public Task AddItemToCartAsync(CartItemDTO model);
 
-        
+        public Task<List<CartItemDTO>> ListItemCartAsync();
+
+
+        public Task UpdateQuantity(CartItemDTO model);
+
+
+        public Task RemoveItemFromCartAsync(Guid id);
+
+
+        public Task<int> GetCartItemCountAsync();
     }
 }

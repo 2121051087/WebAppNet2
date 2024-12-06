@@ -7,8 +7,9 @@ using WebAppNet2.Models.Entities.Catalog;
 
 namespace WebAppNet2.Controllers
 {
-
     [Route("Customer/[Controller]/[Action]")]
+
+    
     [RoleAuthorize(AppRole.Customer)]
     public class CartController : Controller
     {
@@ -18,9 +19,14 @@ namespace WebAppNet2.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        public IActionResult Index()
+
+        [HttpGet]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var listCartItem = await _unitOfWork.CartRepository.ListItemCartAsync();
+
+
+            return View(listCartItem);
         }
 
         [HttpPost]
@@ -35,8 +41,8 @@ namespace WebAppNet2.Controllers
                 return Unauthorized(new { message = "User is not authenticated." });
             }
 
-         
-            if(model.ColorSizeID.ToString() == "00000000-0000-0000-0000-000000000000")
+
+            if (model.ColorSizeID.ToString() == "00000000-0000-0000-0000-000000000000")
             {
                 model.ColorSizeID = await _unitOfWork.ProductRepository.GetColorSizeID(model);
             }
@@ -55,5 +61,55 @@ namespace WebAppNet2.Controllers
             return NotFound(new { success = false, message = "Item not found." });
         }
 
+
+     
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            if (id != Guid.Empty)
+            {
+                // Xóa item khỏi giỏ hàng
+                await _unitOfWork.CartRepository.RemoveItemFromCartAsync(id);
+
+              
+                await _unitOfWork.SaveChangeAsync();
+
+                // Sau khi xóa, redirect về trang giỏ hàng (Index)
+                return RedirectToAction("Index");
+            }
+
+            TempData["Message"] = "Invalid Item ID.";
+            return RedirectToAction("Index");
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateQuantity([FromBody] List<CartItemDTO> models)
+        {
+            if (models != null && models.Any())
+            {
+                foreach (var model in models)
+                {
+                    if (model.Cart_itemID != Guid.Empty)
+                    {
+                        await _unitOfWork.CartRepository.UpdateQuantity(model);
+                    }
+                }
+                await _unitOfWork.SaveChangeAsync();
+
+                return Ok(new { success = true, message = "Items updated successfully." });
+            }
+            return BadRequest(new { success = false, message = "Invalid input data." });
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetCartItemCount()
+        {
+            var result = await _unitOfWork.CartRepository.GetCartItemCountAsync();
+            return Json(result);
+        }
     }
 }

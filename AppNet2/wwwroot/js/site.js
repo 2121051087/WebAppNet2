@@ -16,19 +16,4 @@ window.addEventListener('DOMContentLoaded', event => {
 });
 
 
-
-
-
-console.log("DOM Loaded");
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("Script running");
-    const button = document.getElementById("addColorSize");
-    if (button) {
-        console.log("Button found");
-        button.addEventListener("click", function () {
-            console.log("Button clicked");
-        });
-    } else {
-        console.error("Button not found");
-    }
-});
+    

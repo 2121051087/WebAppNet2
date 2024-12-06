@@ -143,4 +143,14 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+<script>
+    $(document).ready(function () {
+        // Gọi API để lấy số lượng item trong giỏ hàng
+        $.get('@Url.Action("GetCartItemCount", "Cart")', function (data) {
+            // Cập nhật số lượng vào biểu tượng giỏ hàng
+            $('.cart-icon-navbar .badge').text(data);
+        });
+    });
+
+</script>
 </html>

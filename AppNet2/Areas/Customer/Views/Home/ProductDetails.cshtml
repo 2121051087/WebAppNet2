@@ -153,7 +153,7 @@
         console.log("Dữ liệu gửi đi:", cartData);
 
         // Gửi dữ liệu qua AJAX
-        fetch('/Customer/Cart/AddItemToCart', {
+        fetch('/Customer/Cart/AddItemToCart ', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -165,6 +165,7 @@
             .then(data => {
                 if (data.success) {
                     alert(`Đã thêm sản phẩm \"${productName}\" với màu \"${selectedColor.colorHexCode}\" và size \"${selectedSize}\" vào giỏ hàng.`);
+                    window.location.href = '@Url.Action("Index","Home")';
                 } else {
                     alert("Có lỗi xảy ra khi thêm vào giỏ hàng.");
                 }
