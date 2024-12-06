@@ -1,0 +1,139 @@
+﻿@model List<WebAppNet2.Models.DTO.CartItemDTO>
+
+@{
+    ViewData["Title"] = "Giỏ hàng - khách hàng";
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<h1 class="font-monospace"> Giỏ hàng của bạn </h1>
+
+<div class="container mt-5">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th style="width: 15%;">Hình ảnh</th>
+                <th style="width: 45%;">Thông tin sản phẩm</th>
+                <th style="width: 15%;">Đơn giá</th>
+                <th style="width: 15%;">Số lượng</th>
+                <th style="width: 15%;">Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr data-cart-item-id="@item.Cart_itemID" data-color-size-id="@item.ColorSizeID">
+                    <td>
+                        <img src="@item.Image" alt="@item.ProductName" class="img-fluid" style="max-height: 100px;">
+                    </td>
+                    <td>
+                        <p>@item.ProductName</p>
+                        <p>@item.ColorName / @item.SizeName</p>
+
+                        <form method="post" action="@Url.Action("Delete", "Cart")">
+                            <input type="hidden" name="id" value="@item.Cart_itemID" />
+                            <button type="submit" class="text-danger" style="background: none; border: none;">Xóa</button>
+                        </form>
+
+
+
+
+                    </td>
+                    <td class="product-price text-danger" data-price="@item.Price">
+                        <b>@item.Price</b> VNĐ
+                    </td>
+                    <td>
+                        <div class="input-group quantity-input ">
+                            <input type="number" class="form-control text-center quantity-input" value="@item.Quantity" id="quantity-@item.ColorSizeID" onchange="updateQuantityFromInput('@item.ColorSizeID')">
+                        </div>
+                    </td>
+                    <td class="total-price text-danger">
+                        <b>@(item.Price * item.Quantity)</b> VNĐ
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="d-flex flex-column align-items-end">
+        <h5 class="fw-bold m-3">Tổng tiền: <span id="total-price" class="text-danger"></span></h5>
+        <button class="btn btn-dark m-3" onclick="window.location.href='#'">Thanh toán</button>
+    </div>
+</div>
+
+<script>
+    // Đối tượng lưu trữ thông tin số lượng đã thay đổi
+    let updatedQuantities = {};
+
+    function updateQuantityFromInput(colorSizeId) {
+        const row = document.querySelector(`tr[data-color-size-id="${colorSizeId}"]`);
+        const cartItemId = row.dataset.cartItemId; // Lấy CartItemID
+        const quantityInput = row.querySelector(`#quantity-${colorSizeId}`);
+        const price = parseFloat(row.querySelector('.product-price').dataset.price);
+        let quantity = parseInt(quantityInput.value);
+
+        if (quantity < 1) {
+            quantity = 1; // Đảm bảo số lượng không nhỏ hơn 1
+            quantityInput.value = quantity;
+        }
+
+        // Tính toán thành tiền
+        const totalPriceCell = row.querySelector('.total-price');
+        const totalPrice = price * quantity;
+        totalPriceCell.innerHTML = `<b>${totalPrice.toLocaleString()}</b> VNĐ`;
+
+        // Cập nhật số lượng thay đổi
+        updatedQuantities[cartItemId] = quantity;
+
+        // Cập nhật tổng tiền
+        updateTotalPrice();
+    }
+
+    function updateTotalPrice() {
+        let total = 0;
+
+        // Tính tổng tiền
+        document.querySelectorAll('.total-price').forEach(cell => {
+            const price = parseFloat(cell.textContent.replace(/[^\d]/g, ''));
+            total += price;
+        });
+
+        // Cập nhật tổng tiền trên giao diện
+        document.querySelector('#total-price').textContent = total.toLocaleString() + ' VNĐ';
+    }
+
+    function sendUpdatedQuantities() {
+        if (Object.keys(updatedQuantities).length > 0) {
+            const dataToSend = Object.entries(updatedQuantities).map(([cartItemId, quantity]) => ({
+                Cart_itemID: cartItemId,
+                Quantity: quantity
+            }));
+
+
+            fetch('@Url.Action("UpdateQuantity", "Cart")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataToSend)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Cập nhật số lượng thành công:', data);
+                })
+                .catch(error => {
+                    console.error('Lỗi khi cập nhật số lượng:', error);
+                });
+        }
+    }
+
+    window.onload = function () {
+        updateTotalPrice();
+    };
+
+    window.onbeforeunload = function () {
+        if (Object.keys(updatedQuantities).length > 0) {
+            sendUpdatedQuantities();
+        }
+    };
+    
+
+</script>

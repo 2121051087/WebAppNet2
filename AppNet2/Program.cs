@@ -43,6 +43,8 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<IUnitOfWork, DbNet2UnitOfWork>();
 builder.Services.AddScoped<IProductRepository , ProductRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
 
 
 var app = builder.Build();

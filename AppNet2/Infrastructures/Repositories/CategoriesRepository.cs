@@ -92,10 +92,45 @@ namespace WebAppNet2.Infrastructures.Repositories
             return categoryVM;
         }
 
-        public async Task<List<Products>> GetProductsByCategory(Guid? id)
+        public async Task<List<CategoriesVM>> GetProductsByCategory()
         {
-            var products = await _context.Products.Where(p => p.CategoryID == id).ToListAsync();
-            return products;
+            var result = await _context.Categories
+                .Include(c => c.Products)
+                  .ThenInclude(p => p.ColorSizes)
+                    .ThenInclude(cs => cs.Color)
+                .Include(c => c.Products)
+                  .ThenInclude(p => p.ColorSizes)
+                    .ThenInclude(cs => cs.Sizes)
+                .Where(c => c.Products.Any())
+                .ToListAsync();
+
+
+            var categoriesVM = result.Select(c => new CategoriesVM
+            {
+                CategoryID = c.CategoryID,
+                CategoryName = c.CategoryName,
+                Products = c.Products.Select(p => new ProductsVM
+                {
+                    ProductID = p.ProductID,
+                    ProductName = p.ProductName,
+                    Price = p.Price,
+                    ProductDescription= p.ProductDescription,
+                
+                     CurrentImagePath = p.ImageProduct,
+                     colorSizesDTO = p.ColorSizes.Select(cs => new ColorSizesDTO
+                    {
+                         ColorSizesID = cs.ColorSizesID,
+                         ColorID = cs.ColorID,
+                         SizeID = cs.SizeID,
+                         ColorHexCode = cs.Color.ColorHexCode,
+                         ColorName = cs.Color.ColorName,
+                         SizeName = cs.Sizes.SizeName,
+                        Quantity = cs.Quantity
+                    }).ToList(),
+                }).ToList()
+            }).ToList();
+
+            return categoriesVM;
         }
        
       

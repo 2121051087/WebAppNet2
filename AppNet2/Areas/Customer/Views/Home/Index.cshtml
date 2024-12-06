@@ -1,5 +1,152 @@
-﻿
+﻿@model WebAppNet2.Models.DTO.HomeViewModel
 @{
+    ViewData["Title"] = "TEELAB-dev";
     Layout = "~/Views/Shared/CustomerLayout.cshtml";
 }
-<h1>This os Customer Role</h1>
+
+<div class="row g-3 justify-content-center">
+    @foreach (var item in Model.CategoriesVM)
+    {
+        <div class="col-auto">
+            <div class="p-2 border font-monospace" style="border-radius: 64px;">
+                @item.CategoryName
+            </div>
+        </div>
+    }
+</div>
+
+<div id="baner" class="m-3" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; margin: 0 auto;">
+    <img id="slider" src="/images/slider_1.webp" style="width: 78%; height: 39%; object-fit: cover;" />
+</div>
+
+<div class="d-flex justify-content-center align-items-center text-center m-8">
+    <div>
+        <h1 class="m-4">Enjoy Your Youth!</h1>
+        <p>
+            Không chỉ là thời trang, TEELAB còn là “phòng thí nghiệm” của tuổi trẻ - nơi nghiên cứu và cho <br />
+            ra đời nguồn năng lượng mang tên “Youth”. Chúng mình luôn muốn tạo nên những trải nghiệm <br />
+            vui vẻ, năng động và trẻ trung.
+        </p>
+    </div>
+</div>
+
+<div>
+    @foreach (var category in Model.ListProductsByCatgory)
+    {
+        <h2>@category.CategoryName</h2>
+        <div class="product w-100 mt-4 d-flex flex-wrap">
+            @foreach (var product in category.Products)
+            {
+                <div class="card mx-3 mb-4 position-relative" style="width: 11rem;">
+                    <a href="@Url.Action("ProductDetails", "Home", new { id = product.ProductID })">
+                        @if (string.IsNullOrEmpty(product.CurrentImagePath))
+                        {
+                            <img src="/images/no-image.png" class="card-img-top" alt="No Image" style="width: 100%; height: 180px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <img src="@product.CurrentImagePath" class="card-img-top" alt="Product Image" style="width: 100%; height: 180px; object-fit: cover;">
+                        }
+                    </a>
+
+                    <!-- Cart Icon -->
+                    <div class="cart-icon-product d-flex justify-content-center align-items-center position-absolute"
+                         style="top: 10px; right: 10px; opacity: 0; transition: opacity 0.3s;"
+                         onclick="addToCart('@product.ProductID', '@product.ProductName', '@product.Price', selectedColors['@product.ProductID'] || '')">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="color-options d-flex mt-2 justify-content-center">
+                            @foreach (var colorSize in product.colorSizesDTO)
+                            {
+                                <div class="color-option mx-1"
+                                     title="@colorSize.ColorName"
+                                     style="width: 24px; height: 24px; background-color: @colorSize.ColorHexCode; border: 1px solid #ccc; cursor: pointer; border-radius: 12px;"
+                                     onclick="selectColor('@product.ProductID', '@colorSize.ColorSizesID', '@colorSize.ColorHexCode')"
+                                     id="color-@product.ProductID-@colorSize.ColorSizesID">
+                                </div>
+                            }
+                        </div>
+                        <a href="/Product/Details/@product.ProductID" style="text-decoration: none; color: inherit;">
+                            <h5 class="card-title m-1">@product.ProductName</h5>
+                        </a>
+                        <p class="card-text text-danger"><b>@product.Price</b> VNĐ</p>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+    var images = ["/images/slider_1.webp", "/images/slider_2.webp", "/images/slider_3.webp", "/images/slider_4.webp", "/images/slider_5.webp"];
+    var i = 0;
+    setInterval(function () {
+        i++;
+        if (i === images.length) {
+            i = 0;
+        }
+        document.getElementById("slider").src = images[i];
+    }, 3000);
+
+    let selectedColors = {}; // Lưu trạng thái colorSizeID đã chọn cho từng sản phẩm
+
+    function selectColor(productID, colorSizeID, colorHexCode) {
+        // Xóa bỏ chọn màu cũ của sản phẩm này
+        if (selectedColors[productID]) {
+            document.getElementById("color-" + productID + "-" + selectedColors[productID]).style.border = "1px solid #ccc";
+        }
+
+        // Đánh dấu màu đã chọn
+        document.getElementById("color-" + productID + "-" + colorSizeID).style.border = "5px solid #107C10";
+        selectedColors[productID] = colorSizeID;
+
+        console.log("Sản phẩm:", productID, "ColorSizeID đã chọn:", colorSizeID, "Màu Hex:", colorHexCode);
+    }
+
+    // Xử lý hover để hiển thị icon giỏ hàng
+    document.querySelectorAll('.card').forEach(card => {
+        const icon = card.querySelector('.cart-icon-product');
+        card.addEventListener('mouseenter', () => {
+            icon.style.opacity = '1';
+        });
+        card.addEventListener('mouseleave', () => {
+            icon.style.opacity = '0';
+        });
+    });
+
+    function addToCart(productID, productName, price, selectedColorSizeID) {
+        if (!selectedColorSizeID) {
+            alert("Vui lòng chọn màu cho sản phẩm này trước khi thêm vào giỏ hàng.");
+            return;
+        }
+
+        const cartData = {
+            productID: productID,
+            colorSizeID: selectedColorSizeID, // Sử dụng colorSizeID
+            quantity: 1 // Số lượng mặc định
+        };
+
+        console.log("Dữ liệu gửi đi:", cartData);
+
+        fetch('/Customer/Cart/AddItemToCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(cartData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Đã thêm sản phẩm "${productName}" vào giỏ hàng.`);
+                    location.reload(); // Tải lại trang
+                } else {
+                    alert("Có lỗi xảy ra khi thêm vào giỏ hàng.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+
+</script>

@@ -101,6 +101,7 @@ namespace WebAppNet2.Infrastructures.Repositories
                 {
                     ColorSizesID = cs.ColorSizesID,
                     ColorID = cs.ColorID,
+                    ColorHexCode= cs.Color.ColorHexCode,
                     SizeID = cs.SizeID,
                     Quantity = cs.Quantity,
                     ColorName = cs.Color.ColorName,
@@ -123,12 +124,14 @@ namespace WebAppNet2.Infrastructures.Repositories
                 CategoryName = product.Category.CategoryName,
                 UpdatedAt = product.UpdatedAt,
                 colorSizesDTO = productColorSize,
-                //ColorSizesDTOJson = JsonSerializer.Serialize(productColorSize)
+              
             };
 
             return productVM;
         }
 
+     
+        
 
         public async Task<List<ProductsVM>> GetProducts()
         {
@@ -284,6 +287,21 @@ namespace WebAppNet2.Infrastructures.Repositories
             return product;
         }
 
+        public async Task<Guid> GetColorSizeID(CartItemDTO model)
+        {
+            var colorSize = await _context.ColorSizes
+                .Where(cs => cs.ProductID == model.ProductID &&
+                             cs.ColorID == model.ColorID &&
+                             cs.SizeID == model.SizeID)
+                .FirstOrDefaultAsync();
+
+            if (colorSize == null)
+            {
+                throw new Exception("Không tìm thấy ColorSizeID phù hợp.");
+            }
+
+            return colorSize.ColorSizesID;
+        }
 
 
     }

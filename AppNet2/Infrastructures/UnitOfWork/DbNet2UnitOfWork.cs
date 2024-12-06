@@ -7,13 +7,16 @@ namespace WebAppNet2.Infrastructures.UnitOfWork
     {
         public ICategoriesRepository CategoriesRepository { get; set; }
         public IProductRepository ProductRepository { get; set ; }
+        public ICartRepository CartRepository { get ; set; }
 
         private readonly DbNet2Context _context;
-        public DbNet2UnitOfWork(ICategoriesRepository categoriesRepository , DbNet2Context context, IProductRepository productRepository)
+        public DbNet2UnitOfWork(ICategoriesRepository categoriesRepository , DbNet2Context context, IProductRepository productRepository ,ICartRepository cartRepository)
         {
             CategoriesRepository = categoriesRepository;
             _context = context;
             ProductRepository = productRepository;
+            CartRepository = cartRepository;
+           
         }
 
 

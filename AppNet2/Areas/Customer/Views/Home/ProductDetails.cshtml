@@ -1,0 +1,178 @@
+﻿
+
+
+@model WebAppNet2.Models.DTO.ProductsVM
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+    var groupedColorSizes = Model.colorSizesDTO
+        .GroupBy(cs => cs.ColorID)
+        .ToList(); // Nhóm theo ColorID
+
+}
+
+<div class="container d-flex flex-wrap">
+    <div class="col-6 text-center">
+        <img src="@Model.CurrentImagePath" class="img-fluid" alt="@Model.ProductName" style="max-height: 400px; object-fit: cover;" />
+        <p class="mt-3"><b>Mô tả :</b> @Model.ProductDescription</p>
+    </div>
+    <div class="col-6">
+        <h1>@Model.ProductName</h1>
+        <h3 class="text-danger mt-3"><b>@Model.Price</b> VNĐ</h3>
+
+        <h3 class="mt-4">Chọn màu</h3>
+        <div class="d-flex flex-wrap">
+            @foreach (var group in groupedColorSizes)
+            {
+                var color = group.First(); // Lấy thông tin màu từ nhóm
+                <div class="color-option mx-2 text-center"
+                     title="@color.ColorName"
+                     style="width: 60px; height: 60px; background-color: @color.ColorHexCode; border: 1px solid #ccc; cursor: pointer; border-radius:12px; display: flex; align-items: center; justify-content: center;"
+                     onclick="selectColor('@Model.ProductID', '@color.ColorID', '@color.ColorHexCode')"
+                     id="color-@Model.ProductID-@color.ColorID">
+                </div>
+            }
+        </div>
+
+        <h3 class="mt-4">Chọn size</h3>
+        <div class="d-flex flex-wrap" id="size-options">
+            <!-- Size options sẽ được hiển thị tại đây -->
+        </div>
+
+        <div class="input-group quantity-input mt-4">
+            <button class="btn btn-outline-secondary btn-decrease" type="button" onclick="changeQuantity(-1)">-</button>
+            <input type="number" id="quantity" class="form-control text-center" value="1" min="1" />
+            <button class="btn btn-outline-secondary btn-increase" type="button" onclick="changeQuantity(1)">+</button>
+        </div>
+
+        <button class="btn btn-success mt-4" onclick="addToCart('@Model.ProductID', '@Model.ProductName', '@Model.Price', selectedColor, selectedSize)">
+            Thêm vào giỏ hàng
+        </button>
+    </div>
+</div>
+
+<script>
+    let selectedColor = null;
+    let selectedSize = null;
+
+    // Hàm chọn màu
+    function selectColor(productID, colorID, colorHexCode) {
+        selectedColor = { colorID, colorHexCode };
+
+        // Reset style cho các ô màu
+        document.querySelectorAll(`[id^="color-${productID}-"]`).forEach(el => {
+            el.style.border = "1px solid #ccc"; // Border mặc định
+        });
+
+        // Làm nổi bật màu được chọn
+        const selectedElement = document.getElementById(`color-${productID}-${colorID}`);
+        selectedElement.style.border = "5px solid #4EBD4A"; // Border màu nổi bật
+
+        // Cập nhật size options tương ứng với màu đã chọn
+        updateSizeOptions(colorID);
+    }
+
+    // Hàm cập nhật các size dựa trên màu đã chọn
+    function updateSizeOptions(colorID) {
+        const sizeOptionsContainer = document.getElementById("size-options");
+        sizeOptionsContainer.innerHTML = ""; // Xóa các lựa chọn size cũ
+
+        const groupedColorSizes = @Html.Raw(Json.Serialize(Model.colorSizesDTO));
+
+        const availableSizes = groupedColorSizes.filter(cs => cs.colorID === colorID);
+
+        if (availableSizes.length === 0) {
+            sizeOptionsContainer.innerHTML = "<p>Không có size nào khả dụng cho màu này.</p>";
+            return;
+        }
+
+        availableSizes.forEach(cs => {
+            const sizeOption = document.createElement("div");
+            sizeOption.classList.add("size-option", "mx-2", "text-center");
+            sizeOption.title = cs.sizeName;
+            sizeOption.dataset.sizeId = cs.sizeID; // Thêm SizeID vào dataset
+            sizeOption.style = "width: 40px; height: 40px; border: 1px solid #ccc; cursor: pointer; border-radius:50%; display: flex; align-items: center; justify-content: center;";
+            sizeOption.innerHTML = `<small>${cs.sizeName}</small>`;
+            sizeOption.onclick = function () { selectSize(cs.sizeID); }; // Gửi SizeID
+            sizeOptionsContainer.appendChild(sizeOption);
+        });
+    }
+
+    // Hàm chọn size
+    function selectSize(sizeID) {
+        selectedSize = sizeID;
+
+        // Reset style cho các ô size
+        document.querySelectorAll(".size-option").forEach(el => {
+            el.style.border = "1px solid #ccc"; // Border mặc định
+        });
+
+        // Làm nổi bật size được chọn
+        const selectedElement = document.querySelector(`[data-size-id="${sizeID}"]`);
+        selectedElement.style.border = "5px solid #4EBD4A"; // Border màu nổi bật
+    }
+
+    // Hàm thay đổi số lượng
+    function changeQuantity(amount) {
+        const quantityInput = document.getElementById("quantity");
+        let currentQuantity = parseInt(quantityInput.value, 10);
+
+        if (isNaN(currentQuantity)) {
+            currentQuantity = 1;
+        }
+
+        const newQuantity = currentQuantity + amount;
+
+        // Đảm bảo số lượng nằm trong khoảng [min, max]
+        const min = parseInt(quantityInput.min, 10) || 1;
+        const max = parseInt(quantityInput.max, 10) || 100;
+
+        if (newQuantity >= min && newQuantity <= max) {
+            quantityInput.value = newQuantity;
+        }
+    }
+
+    // Hàm thêm vào giỏ hàng
+    function addToCart(productID, productName, price, selectedColor, selectedSize) {
+        const quantityInput = document.getElementById("quantity");
+        const quantity = parseInt(quantityInput.value, 10);
+
+        if (!selectedColor || !selectedSize) {
+            alert("Vui lòng chọn màu và size cho sản phẩm này trước khi thêm vào giỏ hàng.");
+            return;
+        }
+
+        // Tạo dữ liệu để gửi
+        const cartData = {
+            productID: productID,
+            colorID: selectedColor.colorID,
+            sizeID: selectedSize, // Gửi SizeID thay vì SizeName
+            quantity: quantity
+        };
+        console.log("Dữ liệu gửi đi:", cartData);
+
+        // Gửi dữ liệu qua AJAX
+        fetch('/Customer/Cart/AddItemToCart ', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+
+            },
+            body: JSON.stringify(cartData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`Đã thêm sản phẩm \"${productName}\" với màu \"${selectedColor.colorHexCode}\" và size \"${selectedSize}\" vào giỏ hàng.`);
+                    window.location.href = '@Url.Action("Index","Home")';
+                } else {
+                    alert("Có lỗi xảy ra khi thêm vào giỏ hàng.");
+                }
+            })
+            .catch(error => console.error("Error:", error));
+    }
+</script>
+
+
+

@@ -7,7 +7,7 @@ namespace WebAppNet2.Models.Entities.Carts
         [Key]
         public Guid CartID { get; set; }
 
-        public Guid UserID { get; set; }
+        public string UserID { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
