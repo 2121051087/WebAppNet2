@@ -8,10 +8,23 @@
 <h1 class="m-3">Danh sách danh mục</h1>
 
 <hr />
+<!-- Search Form -->
+<form method="get" class="mb-3">
+    <div class="input-group">
+        <!-- Search string will be passed via the form -->
+        <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm danh mục..." />
+        <button asp-action="Search" asp-controller="Categories" type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+</form>
+
 
 <p>
-    <a href="@Url.Action("Create","Categories")" class="btn btn-success m-1 ">Thêm danh mục</a>
+    <a href="@Url.Action("Create","Categories")" class="btn btn-primary m-1 ">Thêm danh mục</a>
+    <a href="@Url.Action("Index", "Categories")" class="btn btn-danger mx-lg-1">Xóa tìm kiếm</a>
 </p>
+
+
+
 <table class="table">
     <thead>
         <tr>
