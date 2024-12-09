@@ -1,0 +1,251 @@
+﻿@model WebAppNet2.Models.DTO.OrdersDTO
+
+@{
+    ViewData["Title"] = "Thanh toán";
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<main class="container py-3">
+    <header class="mb-4">
+        <h3>Thanh toán</h3>
+    </header>
+    <div class="row g-3">
+        <!-- Thông tin đặt hàng - chiếm 6/12 -->
+        <div class="col-lg-6 col-md-12 custom-secondary p-3">
+            <header>
+                <h4>Thông tin đặt hàng</h4>
+            </header>
+            <form id="checkoutForm">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="fullName" class="form-label">Họ và tên</label>
+                        <input type="text" id="fullName" asp-for="fullName" class="form-control" required placeholder="Nhập họ tên của bạn" autofocus value="Example">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label">Số điện thoại</label>
+                        <input type="tel" id="phone" asp-for="PhoneNumber" class="form-control" required placeholder="Nhập số điện thoại của bạn">
+                    </div>
+                </div>
+
+                <div class="address-container mb-3">
+                    <label for="address" class="form-label">Địa chỉ</label>
+                    <input type="text" id="address" asp-for="Address" class="form-control" required placeholder="Nhập địa chỉ của bạn" autocomplete="off">
+                    <div id="suggestions" class="suggestions mt-2"></div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="city" class="form-label">Tỉnh/Thành phố</label>
+                        <input type="text" id="city" asp-for="City" class="form-control" required placeholder="Nhập tỉnh/thành phố">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="district" class="form-label">Quận/Huyện</label>
+                        <input type="text" id="district" asp-for="District" class="form-control" required placeholder="Nhập quận/huyện">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="ward" class="form-label">Phường/Xã</label>
+                        <input type="text" id="ward" asp-for="Ward" class="form-control" required placeholder="Nhập phường/xã">
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Khoảng trắng - chiếm 1/12 -->
+        <div class="col-lg-1 d-none d-lg-block"></div>
+
+        <!-- Thông tin đơn hàng - chiếm 5/12 -->
+        <div class="col-lg-5 col-md-12 custom-secondary p-3">
+            <header>
+                <h4>Thông tin đơn hàng</h4>
+            </header>
+            <div class="order-items">
+                @foreach (var item in Model.cartItemDTOs)
+                {
+                    <div class="row mb-3 align-items-center border-bottom pb-2 order-item">
+                        <!-- Ảnh sản phẩm -->
+                        <div class="col-2 d-flex align-items-center justify-content-center">
+                            <img src="@item.Image" alt="@item.ProductName" class="img-fluid rounded" style="max-height: 50px; width: auto;" />
+                        </div>
+                        <!-- Thông tin sản phẩm -->
+                        <div class="col-8 d-flex flex-column justify-content-center">
+                            <p class="fw-bold mb-0">@item.ProductName</p>
+                            <p class="mb-0 text-muted">@item.ColorName / @item.SizeName</p>
+                        </div>
+                        <!-- Số lượng -->
+                        <div class="col-2 d-flex align-items-center justify-content-center">
+                            <p class="mb-0 text-danger">x @item.Quantity</p>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Tổng tiền -->
+            <div class="mt-4 d-flex justify-content-end">
+                <p class="text-danger h4 mb-0">
+                    <b class="text-black">Tổng tiền:</b> @string.Format("{0:C0} ", Model.cartItemDTOs.Sum(item => item.Price * item.Quantity))
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút Đặt hàng ở cuối trang, bên phải -->
+    <div class="text-end mt-4">
+        <button type="submit" form="checkoutForm" class="btn btn-primary">Đặt hàng</button>
+    </div>
+</main>
+
+<style>
+    .row {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .custom-secondary {
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        height: 100%;
+    }
+
+    .col-lg-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+
+    .col-lg-5 {
+        flex: 0 0 41.6667%;
+        max-width: 41.6667%;
+    }
+
+    .col-lg-1 {
+        flex: 0 0 8.3333%;
+        max-width: 8.3333%;
+    }
+
+    .order-item img {
+        max-height: 50px;
+        width: auto;
+    }
+
+    .order-item p {
+        margin: 0;
+    }
+
+    .suggestions {
+        display: none;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        position: absolute;
+        width: 100%;
+        z-index: 10;
+    }
+
+    .suggestion-item {
+        padding: 8px;
+        cursor: pointer;
+    }
+
+        .suggestion-item:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<script>
+    const apiKey = 'R6t1dNuN6dz6UMvtb7FnT7SqgQ4QSBnGDaX9bphx';
+    const addressInput = document.getElementById('address');
+    const suggestionsContainer = document.getElementById('suggestions');
+    const cityInput = document.getElementById('city');
+    const districtInput = document.getElementById('district');
+    const wardInput = document.getElementById('ward');
+    let sessionToken = crypto.randomUUID();
+
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    const debouncedSearch = debounce((query) => {
+        if (query.length < 2) {
+            suggestionsContainer.style.display = 'none';
+            return;
+        }
+
+        fetch(`https://rsapi.goong.io/Place/AutoComplete?api_key=${apiKey}&input=${encodeURIComponent(query)}&sessiontoken=${sessionToken}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'OK') {
+                    suggestionsContainer.innerHTML = '';
+                    suggestionsContainer.style.display = 'block';
+
+                    data.predictions.forEach(prediction => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item';
+                        div.textContent = prediction.description;
+                        div.addEventListener('click', () => {
+                            addressInput.value = prediction.description;
+                            suggestionsContainer.style.display = 'none';
+
+                            if (prediction.compound) {
+                                cityInput.value = prediction.compound.province || '';
+                                districtInput.value = prediction.compound.district || '';
+                                wardInput.value = prediction.compound.commune || '';
+                            }
+                        });
+                        suggestionsContainer.appendChild(div);
+                    });
+                }
+            })
+            .catch(error => console.error('Lỗi:', error));
+    }, 300);
+
+    addressInput.addEventListener('input', (e) => debouncedSearch(e.target.value));
+
+    document.addEventListener('click', function (e) {
+        if (!suggestionsContainer.contains(e.target) && e.target !== addressInput) {
+            suggestionsContainer.style.display = 'none';
+        }
+    });
+
+    document.getElementById('checkoutForm').addEventListener('submit', function (e) {
+        e.preventDefault(); // Ngừng gửi form mặc định
+
+        // Lấy dữ liệu từ form
+        const formData = new FormData(this);
+
+        // Chuyển đổi thành object
+        const formDataObject = {};
+        formData.forEach((value, key) => {
+            formDataObject[key] = value;
+        });
+
+        // Log dữ liệu ra console để kiểm tra
+        console.log("Dữ liệu gửi đi:", formDataObject);
+
+        // Gửi dữ liệu qua fetch (hoặc AJAX)
+        fetch('@Url.Action("CreateOrder","Order")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formDataObject)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Dữ liệu trả về từ server:", data);
+                alert("Đặt hàng thành công! ");
+                window.location.href = '@Url.Action("Index", "Home", new { area = "Customer" })';
+            })
+            .catch(error => {
+                console.error("Lỗi khi gửi form:", error);
+            });
+    });
+</script>

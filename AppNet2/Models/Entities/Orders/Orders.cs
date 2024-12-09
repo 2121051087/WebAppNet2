@@ -10,6 +10,8 @@ namespace WebAppNet2.Models.Entities.Orders
 
         public DateTime OrderDate { get; set; }
 
+        public string FullName { get; set; }
+
         public double TotalAmount { get; set; }
 
         public string Status { get; set; }

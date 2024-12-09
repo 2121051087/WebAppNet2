@@ -4,6 +4,7 @@ using AppNet2.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WebAppNet2.Migrations
 {
     [DbContext(typeof(DbNet2Context))]
-    partial class DbNet2ContextModelSnapshot : ModelSnapshot
+    [Migration("20241209001136_add_col_fullNameOfOrder")]
+    partial class add_col_fullNameOfOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

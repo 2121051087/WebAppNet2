@@ -18,5 +18,7 @@ namespace WebAppNet2.Infrastructures.Repositories
 
 
         public Task<int> GetCartItemCountAsync();
+
+        public Task ClearCartAsync();
     }
 }

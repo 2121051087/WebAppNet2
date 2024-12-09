@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WebAppNet2.Infrastructures;
 using WebAppNet2.Infrastructures.Repositories;
 using WebAppNet2.Infrastructures.UnitOfWork;
 using WebAppNet2.Models.Entities.Catalog;
@@ -44,7 +45,7 @@ builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
 builder.Services.AddScoped<IUnitOfWork, DbNet2UnitOfWork>();
 builder.Services.AddScoped<IProductRepository , ProductRepository>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
-
+builder.Services.AddScoped<IOrdersRepository, OrdersRepository>();
 
 
 var app = builder.Build();

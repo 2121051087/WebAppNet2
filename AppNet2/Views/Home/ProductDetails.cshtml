@@ -128,40 +128,51 @@
     }
 
     // Hàm thêm vào giỏ hàng
-    function addToCart(productID, productName, price, selectedColor, selectedSize) {
-        const quantityInput = document.getElementById("quantity");
-        const quantity = parseInt(quantityInput.value, 10);
+    // function addToCart(productID, productName, price, selectedColor, selectedSize) {
+    //     const quantityInput = document.getElementById("quantity");
+    //     const quantity = parseInt(quantityInput.value, 10);
 
-        if (!selectedColor || !selectedSize) {
-            alert("Vui lòng chọn màu và size cho sản phẩm này trước khi thêm vào giỏ hàng.");
+    //     if (!selectedColor || !selectedSize) {
+    //         alert("Vui lòng chọn màu và size cho sản phẩm này trước khi thêm vào giỏ hàng.");
+    //         return;
+    //     }
+
+    //     // Tạo dữ liệu để gửi
+    //     const cartData = {
+    //         productID: productID,
+    //         colorID: selectedColor.colorID,
+    //         sizeName: selectedSize,
+    //         quantity: quantity
+    //     };
+
+    //     // Gửi dữ liệu qua AJAX
+    //     fetch('/Cart/AddToCart', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+            
+    //         },
+    //         body: JSON.stringify(cartData)
+    //     })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data.success) {
+    //                 alert(`Đã thêm sản phẩm \"${productName}\" với màu \"${selectedColor.colorHexCode}\" và size \"${selectedSize}\" vào giỏ hàng.`);
+    //             } else {
+    //                 alert("Có lỗi xảy ra khi thêm vào giỏ hàng.");
+    //             }
+    //         })
+    //         .catch(error => console.error("Error:", error));
+    // }
+
+    function addToCart(productID, productName, price, selectedColor, selectedSize) {
+        if (!selectedColor) {
+            alert("Vui lòng chọn màu cho sản phẩm này trước khi thêm vào giỏ hàng.");
             return;
         }
 
-        // Tạo dữ liệu để gửi
-        const cartData = {
-            productID: productID,
-            colorID: selectedColor.colorID,
-            sizeName: selectedSize,
-            quantity: quantity
-        };
-
-        // Gửi dữ liệu qua AJAX
-        fetch('/Cart/AddToCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            
-            },
-            body: JSON.stringify(cartData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(`Đã thêm sản phẩm \"${productName}\" với màu \"${selectedColor.colorHexCode}\" và size \"${selectedSize}\" vào giỏ hàng.`);
-                } else {
-                    alert("Có lỗi xảy ra khi thêm vào giỏ hàng.");
-                }
-            })
-            .catch(error => console.error("Error:", error));
+        // Thông báo yêu cầu đăng nhập nếu chưa đăng nhập
+        alert("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng.");
+        window.location.href = "@Url.Action("LogIn", "Auth")" // Chuyển hướng đến trang đăng nhập
     }
 </script>

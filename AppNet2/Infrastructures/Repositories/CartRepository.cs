@@ -76,7 +76,7 @@ namespace WebAppNet2.Infrastructures.Repositories
             var existingCart = await _context.Carts
                                             .Include(c => c.cartItems)
                                             .ThenInclude(ci => ci.Products)
-                                            .FirstOrDefaultAsync(c => c.UserID == userID);
+                                            .FirstOrDefaultAsync(c => c.UserID.ToString() == userID);
 
             if(existingCart != null)
             {
@@ -110,7 +110,7 @@ namespace WebAppNet2.Infrastructures.Repositories
                 .Include(c => c.ColorSizes).ThenInclude(cs => cs.Color)
                 .Include(c => c.ColorSizes).ThenInclude(cs => cs.Sizes)
                 .Include(c => c.Products)
-                .Where(c => c.Carts.UserID == userId)
+                .Where(c => c.Carts.UserID.ToString() == userId)
                 .ToListAsync();
 
             
@@ -165,12 +165,30 @@ namespace WebAppNet2.Infrastructures.Repositories
 
         public async Task<int> GetCartItemCountAsync()
         {
-            var userId = _httpContextAccessor.HttpContext.Session.GetString("UserID");
+            string userId = _httpContextAccessor.HttpContext.Session.GetString("UserID");
 
             var result = await _context.CartItem
-                .Where(c => c.Carts.UserID == userId)
+                .Where(c => c.Carts.UserID.ToString() == userId)
                 .CountAsync();  // Sử dụng CountAsync để thực hiện truy vấn bất đồng bộ
             return result;
+        }
+
+
+        public async Task ClearCartAsync()
+        {
+            var userID = _httpContextAccessor.HttpContext?.Session.GetString("UserID");
+
+            if (string.IsNullOrEmpty(userID))
+            {
+                throw new Exception("Không thể xác định userID.");
+            }
+
+            var existCart = await _context.Carts.FirstOrDefaultAsync(c => c.UserID.ToString() == userID);
+
+            var cartItem = await  _context.CartItem.Where(ci => ci.CartID == existCart.CartID).ToListAsync();
+
+          
+            _context.CartItem.RemoveRange(cartItem);
         }
 
     }

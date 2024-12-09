@@ -7,6 +7,11 @@ namespace WebAppNet2.Infrastructures.UnitOfWork
         ICategoriesRepository CategoriesRepository { get; set; }
         IProductRepository ProductRepository { get; set; }
         ICartRepository CartRepository { get; set; }
+
+        IOrdersRepository OrdersRepository { get; set; }
+      
+
+
         Task SaveChangeAsync();
     }
 }

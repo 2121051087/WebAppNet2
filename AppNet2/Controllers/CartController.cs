@@ -8,8 +8,6 @@ using WebAppNet2.Models.Entities.Catalog;
 namespace WebAppNet2.Controllers
 {
     [Route("Customer/[Controller]/[Action]")]
-
-    
     [RoleAuthorize(AppRole.Customer)]
     public class CartController : Controller
     {
@@ -111,5 +109,8 @@ namespace WebAppNet2.Controllers
             var result = await _unitOfWork.CartRepository.GetCartItemCountAsync();
             return Json(result);
         }
+
+
+
     }
 }
