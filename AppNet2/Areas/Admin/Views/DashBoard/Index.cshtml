@@ -1,9 +1,57 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<double>
+
 @{
-    Layout ="~/Views/Shared/AdminLayout.cshtml" ;
+    Layout = "~/Views/Shared/AdminLayout.cshtml";
 }
-<h1>
-   this is DashBoard 
-</h1>
+<h1>Biểu đồ doanh thu cộng dồn theo tháng</h1>
+<canvas id="revenueChart" width="800" height="400"></canvas> <!-- Vùng hiển thị biểu đồ -->
+
+<script>
+    // Lấy dữ liệu doanh thu từ Model (List<double>)
+    const chartData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+
+    // Gắn nhãn cho từng tháng (giả sử 12 tháng trong năm)
+    const labels = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+
+    // Tạo biểu đồ đường
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line', // Loại biểu đồ: đường
+        data: {
+            labels: labels.slice(0, chartData.length), // Hiển thị đúng số tháng có dữ liệu
+            datasets: [{
+                label: 'Doanh thu cộng dồn',
+                data: chartData, // Dữ liệu doanh thu cộng dồn
+                borderColor: 'rgba(75, 192, 192, 1)', // Màu đường
+                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Màu nền dưới đường
+                borderWidth: 2, // Độ dày đường
+                tension: 0.4 // Độ cong của đường (0.4 là cong vừa phải)
+            }]
+        },
+        options: {
+            responsive: true, // Tự động thay đổi kích thước
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top' // Vị trí của chú thích
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true, // Bắt đầu từ giá trị 0
+                    title: {
+                        display: true,
+                        text: 'Doanh thu (VNĐ)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Tháng'
+                    }
+                }
+            }
+        }
+    });
+</script>

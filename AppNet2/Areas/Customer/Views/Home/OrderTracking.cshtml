@@ -1,0 +1,52 @@
+﻿@model List<WebAppNet2.Models.DTO.OrdersDTO>
+@{
+    ViewData["Title"] = "Theo dõi đơn hàng";
+    Layout = "~/Views/Shared/CustomerLayout.cshtml";
+}
+
+<div class="navigation">
+    <div class="row">
+        <div class="col-2">
+            <a href="@Url.Action("OrderTracking", "Home", new { status = "Chờ xác nhận", area ="Customer" })" class="btn btn-default" style="border-radius: 24px;border: 1px solid black;">Chờ xác nhận</a>
+        </div>
+        <div class="col-2">
+            <a href="@Url.Action("OrderTracking", "Home", new { status = "Đã xác nhận", area ="Customer" })" class="btn btn-default" style="border-radius: 24px;border: 1px solid black;">Đã xác nhận</a>
+        </div>
+        <div class="col-2">
+            <a href="@Url.Action("OrderTracking", "Home", new { status = "Đã hủy", area ="Customer" })" class="btn btn-default" style="border-radius: 24px;border: 1px solid black; ">Đã hủy</a>
+        </div>
+    </div>
+</div> 
+
+
+<h1 class="m-3">Danh sách đơn hàng</h1>
+
+<div class="d-flex flex-wrap">
+    @foreach (var item in Model)
+    {
+        <div class="card m-3" style="flex: 0 0 calc(25% - 2rem);">
+            <div class="card-header">
+                <a href="@Url.Action("Detail", "OrderManager", new { orderID = item.OrderID })" class="text-decoration-none">
+                    <h5 class="card-title">@item.Status</h5>
+                </a>
+            </div>
+            <div class="card-body d-flex flex-column">
+                <div>
+                    <p class="card-text">@item.fullName</p>
+                    <p class="card-text">@item.PhoneNumber</p>
+                    <p class="card-text">@item.Address</p>
+                </div>
+                <p class="card-text">   </p>
+                <p class="card-text mt-auto text-end">
+                    <b class="text-danger">@string.Format("{0:C0}", item.TotalAmount)</b>
+                </p>
+                @if (item.Status == "Chờ xác nhận")
+                {
+                    <div class="d-flex justify-content-end">
+                        <a href="@Url.Action("ConfirmOrder", "Home", new { orderID = item.OrderID, area = "Customer" })" class="btn btn-secondary me-3">Hủy</a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</div>

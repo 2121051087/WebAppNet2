@@ -57,6 +57,35 @@ namespace WebAppNet2.Areas.Customer.Controllers
         {
             return View();
         }
+
+        [HttpGet]
+
+        public async Task<IActionResult> OrderTracking(string status)
+        {
+            if (status == null)
+            {
+                status = "Chờ xác nhận";
+            }
+
+            var data = await _unitOfWork.OrdersRepository.GetOrdersByUserIdAndStatus(status);
+
+            return View(data);
+        }
+        [HttpGet("{orderID}")]
+        public async Task<IActionResult> ConfirmOrder(Guid orderID)
+        {
+            await _unitOfWork.OrdersRepository.ConfirmOrder(orderID);
+
+            if (orderID == Guid.Empty)
+            {
+                return BadRequest();
+            }
+            await _unitOfWork.OrdersRepository.ConfirmOrder(orderID);
+
+            await _unitOfWork.SaveChangeAsync();
+
+            return RedirectToAction("OrderTracking");
+        }
     }
 }
 

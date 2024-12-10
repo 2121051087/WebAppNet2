@@ -36,9 +36,6 @@ namespace WebAppNet2.Models.DTO
         public List<IGrouping<Guid,ColorSizesDTO>>? groupColorSizeByColoRID { get; set; }
 
 
-        // Thêm thuộc tính cho dữ liệu JSON để gửi xuống View
-        //public string? ColorSizesDTOJson { get; set; }
-
     }
 
     public class ColorSizesDTO
