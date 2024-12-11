@@ -16,5 +16,7 @@ namespace WebAppNet2.Infrastructures.Repositories
         public Task<List<Sizes>> GetSizes();
 
         public Task<Guid> GetColorSizeID(CartItemDTO model);
+        public Task<int> CountProduct();
     }
+
 }

@@ -303,6 +303,11 @@ namespace WebAppNet2.Infrastructures.Repositories
             return colorSize.ColorSizesID;
         }
 
+        public async Task<int> CountProduct()
+        {
+            var count = await _context.Products.CountAsync();
 
+            return count;
+        }
     }
 }

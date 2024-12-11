@@ -24,10 +24,16 @@ namespace WebAppNet2.Infrastructures.Repositories
 
         public Task<OrdersDTO> Detail(Guid orderID);
 
+        public Task<List<OrdersDTO>> GetOrdersByUserIdAndStatus(string status);
 
         public Task<List<double>> GetTotalAmountByMonth();
 
-        public Task<List<OrdersDTO>> GetOrdersByUserIdAndStatus(string status);
+        public Task<List<double>> GetTotalAmountByWeek();
+
+
+        public Task<int> CountConfirmedOrders();
+
+        public Task<int> CountSoldProducts();
 
     }
     //
@@ -267,6 +273,28 @@ namespace WebAppNet2.Infrastructures.Repositories
 
             return order;
         }
+        public async Task<List<OrdersDTO>> GetOrdersByUserIdAndStatus(string status)
+        {
+            var userId = _httpContextAccessor.HttpContext?.Session.GetString("UserID");
+            var result = await _context.Orders
+                .Where(o => o.UserID == Guid.Parse(userId) && o.Status == status)
+                .Select(o => new OrdersDTO
+                {
+                    OrderID = o.OrderID,
+                    OrderDate = o.OrderDate,
+                    fullName = o.FullName,
+                    Status = o.Status,
+                    Address = o.Address,
+                    City = o.City,
+                    District = o.District,
+                    Ward = o.Ward,
+                    PhoneNumber = o.PhoneNumber,
+                    TotalAmount = o.TotalAmount
+                })
+                .ToListAsync();
+
+            return result;
+        }
         public async Task<List<double>> GetTotalAmountByMonth()
         {
             var result = await _context.Orders
@@ -292,32 +320,52 @@ namespace WebAppNet2.Infrastructures.Repositories
             return chartData;
         }
 
-        // Lấy danh sách đơn hàng theo UserID và Status
-        public async Task<List<OrdersDTO>> GetOrdersByUserIdAndStatus(string status)
+
+        public async Task<List<double>> GetTotalAmountByWeek()
+    
         {
-            var userId = _httpContextAccessor.HttpContext?.Session.GetString("UserID");
+            var currentDate = DateTime.UtcNow.AddHours(7);
+            var startDate = currentDate.AddDays(-7);
+            var endDate = currentDate;
+
             var result = await _context.Orders
-                .Where(o => o.UserID == Guid.Parse(userId) && o.Status == status)
-                .Select(o => new OrdersDTO
+                .Where(o => o.Status == "Đã xác nhận" && o.OrderDate >= startDate && o.OrderDate <= endDate)
+                .GroupBy(o => o.OrderDate.Date)
+                .Select(g => new
                 {
-                    OrderID = o.OrderID,
-                    OrderDate = o.OrderDate,
-                    fullName = o.FullName,
-                    Status = o.Status,
-                    Address = o.Address,
-                    City = o.City,
-                    District = o.District,
-                    Ward = o.Ward,
-                    PhoneNumber = o.PhoneNumber,
-                    TotalAmount = o.TotalAmount
+                    Date = g.Key,
+                    TotalAmount = g.Sum(o => o.TotalAmount)
                 })
+                .OrderBy(g => g.Date)
                 .ToListAsync();
 
-            return result;
+            var chartData = new List<double>();
+            double runningTotal = 0;
+
+            foreach (var item in result)
+            {
+                runningTotal += item.TotalAmount;
+                chartData.Add(runningTotal);
+            }
+
+            return chartData;
         }
+        public async Task<int> CountConfirmedOrders()
+        {
+            var count = await _context.Orders.CountAsync(o => o.Status == "Đã xác nhận");
+            return count;
+        }
+        public async Task<int> CountSoldProducts()
+        {
+            var count = await _context.OrderDetails
+                .Where(od => od.Orders.Status == "Đã xác nhận")
+                .SumAsync(od => od.Quantity);
+            return count;
+        }
+        
        
         
-        
+       
 
 
     }

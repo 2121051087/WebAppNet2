@@ -10,5 +10,7 @@ namespace WebAppNet2.Infrastructures.Repositories
         public Task<object> LogInAsync(LogInVM model, HttpContext httpContext);
 
         public Task LogOutAsync();
+
+        public Task<int> CountCustomerAccountsAsync();
     }
 }

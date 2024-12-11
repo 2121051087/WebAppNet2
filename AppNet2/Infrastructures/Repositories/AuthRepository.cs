@@ -95,5 +95,14 @@ namespace WebAppNet2.Infrastructures.Repositories
             await _signInManager.SignOutAsync();
 
         }
+        
+
+
+        public async Task<int> CountCustomerAccountsAsync()
+        {
+            var customers = await _userManager.GetUsersInRoleAsync(AppRole.Customer);
+            return customers.Count;
+        }
+
     }
 }

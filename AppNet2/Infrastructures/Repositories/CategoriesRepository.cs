@@ -140,6 +140,11 @@ namespace WebAppNet2.Infrastructures.Repositories
 
             return count;
         }
-        
+
+        public async Task<int> CountCategories()
+        {
+            var count = await _context.Categories.CountAsync();
+            return count;
+        }
     }
 }
