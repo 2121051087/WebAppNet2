@@ -1,5 +1,6 @@
 ﻿using AppNet2.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using System.Security.Claims;
 using WebAppNet2.Models.DTO;
 using WebAppNet2.Models.Entities.Orders;
@@ -12,14 +13,14 @@ namespace WebAppNet2.Infrastructures.Repositories
 
         public Task<List<OrdersDTO>> GetAllNewOrder();
 
-        public  Task ConfirmOrder(Guid orderID);
+        public Task ConfirmOrder(Guid orderID);
 
         public Task CancelOrder(Guid orderID);
 
 
         public Task<List<OrdersDTO>> GetAllConfirmOrder();
 
-        public  Task<List<OrdersDTO>> GetAllCancelOrder();
+        public Task<List<OrdersDTO>> GetAllCancelOrder();
 
 
         public Task<OrdersDTO> Detail(Guid orderID);
@@ -28,7 +29,7 @@ namespace WebAppNet2.Infrastructures.Repositories
 
         public Task<List<double>> GetTotalAmountByMonth();
 
-        public Task<List<double>> GetTotalAmountByWeek();
+        public Task<List<GetTotalAmountByWeekVM>> GetTotalAmountByWeek();
 
 
         public Task<int> CountConfirmedOrders();
@@ -128,21 +129,17 @@ namespace WebAppNet2.Infrastructures.Repositories
 
 
 
-        public  async Task ConfirmOrder(Guid orderID)
+        public async Task ConfirmOrder(Guid orderID)
         {
-          
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderID == orderID);
 
-            if(order == null)
+            if (order == null)
             {
                 throw new Exception("Order not found");
             }
             order.Status = "Đã xác nhận";
 
             _context.Orders.Update(order);
-
-
-            
         }
 
 
@@ -320,36 +317,31 @@ namespace WebAppNet2.Infrastructures.Repositories
             return chartData;
         }
 
-
-        public async Task<List<double>> GetTotalAmountByWeek()
-    
-        {
-            var currentDate = DateTime.UtcNow.AddHours(7);
-            var startDate = currentDate.AddDays(-7);
-            var endDate = currentDate;
-
-            var result = await _context.Orders
-                .Where(o => o.Status == "Đã xác nhận" && o.OrderDate >= startDate && o.OrderDate <= endDate)
-                .GroupBy(o => o.OrderDate.Date)
-                .Select(g => new
-                {
-                    Date = g.Key,
-                    TotalAmount = g.Sum(o => o.TotalAmount)
-                })
-                .OrderBy(g => g.Date)
+        public async Task<List<GetTotalAmountByWeekVM>> GetTotalAmountByWeek()
+            {
+            var orders = await _context.Orders
+                .Where(o => o.Status == "Đã xác nhận")
                 .ToListAsync();
 
-            var chartData = new List<double>();
-            double runningTotal = 0;
+            var result = orders
+                .GroupBy(o => new
+                {
+                    Year = o.OrderDate.Year,
+                    Week = CultureInfo.CurrentCulture.Calendar.GetWeekOfYear(o.OrderDate, CalendarWeekRule.FirstDay, DayOfWeek.Monday)
+                })
+                .Select(g => new GetTotalAmountByWeekVM
+                {
+                    Week = g.Key.Week,
+                    Year = g.Key.Year,
+                    TotalAmount = g.Sum(o => o.TotalAmount)
+                })
+                .OrderBy(g => g.Year)
+                .ThenBy(g => g.Week)
+                .ToList();
 
-            foreach (var item in result)
-            {
-                runningTotal += item.TotalAmount;
-                chartData.Add(runningTotal);
-            }
-
-            return chartData;
+            return result;
         }
+
         public async Task<int> CountConfirmedOrders()
         {
             var count = await _context.Orders.CountAsync(o => o.Status == "Đã xác nhận");
@@ -362,11 +354,5 @@ namespace WebAppNet2.Infrastructures.Repositories
                 .SumAsync(od => od.Quantity);
             return count;
         }
-        
-       
-        
-       
-
-
     }
 }

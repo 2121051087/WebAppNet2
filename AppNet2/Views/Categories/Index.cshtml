@@ -3,56 +3,70 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/AdminLayout.cshtml";
+    string searchString = ViewData["searchString"] as string;
 }
 
-<h1 class="m-3">Danh sách danh mục</h1>
+<h1 class="mt-2">Danh sách danh mục </h1>
 
-<hr />
 <!-- Search Form -->
-<form method="get" class="mb-3">
-    <div class="input-group">
-        <!-- Search string will be passed via the form -->
-        <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm danh mục..." />
-        <button asp-action="Search" asp-controller="Categories" type="submit" class="btn btn-primary">Tìm kiếm</button>
+<div class="row justify-content-center">
+    <div class="col-6 m-4">
+        <form asp-action="Index" asp-controller="Categories" method="get" class="mb-3">
+            <div class="input-group">
+                <!-- Search string will be passed via the form -->
+                <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm danh mục..." value="@searchString" />
+                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
+
+
+
+<div class="row justify-content-center">
+    <div class="col-10">
 
 
 <p>
-    <a href="@Url.Action("Create","Categories")" class="btn btn-primary m-1 ">Thêm danh mục</a>
-    <a href="@Url.Action("Index", "Categories")" class="btn btn-danger mx-lg-1">Xóa tìm kiếm</a>
+    <a href="@Url.Action("Create","Categories")" class="btn btn-success m-1 ">Thêm danh mục</a>
+
 </p>
-
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayName("Tên danh mục")
-            </th>
-            <th>
-                @Html.DisplayName("Số sản phẩm")
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+     
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CategoryName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CountNumberProductByCategory)
-                </td>
-                <td>
-                    <a href="@Url.Action("Edit","Categories",new{id = item.CategoryID})" class="btn btn-warning ">Cập nhật</a> |
-                   
-                    <a href="@Url.Action("Delete","Categories",new{id = item.CategoryID})" class="btn btn-danger">Xóa</a>
-                </td>
-            </tr>
-        }
+                <th>
+                    @Html.DisplayName("Tên danh mục")
+                </th>
+                <th>
+                    @Html.DisplayName("Số sản phẩm")
+                </th>
+                <th>
 
-    </tbody>
-</table>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CountNumberProductByCategory)
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit","Categories",new{id = item.CategoryID})" class="btn btn-warning ">Cập nhật</a> |
+
+                        <a href="@Url.Action("Delete","Categories",new{id = item.CategoryID})" class="btn btn-danger">Xóa</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    </div>
+</div>
+
+

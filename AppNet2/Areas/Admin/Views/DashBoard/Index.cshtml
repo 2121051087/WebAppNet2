@@ -39,7 +39,7 @@
                 <div class="d-flex align-items-center">
                     <div>
                         <span class="h2 fw-bold text-dark">@Model.CountUsers</span>
-                        <h3 class="fs-6 text-muted">Người dùng </h3>
+                        <h3 class="fs-6 text-muted">Người dùng</h3>
                     </div>
                     <div class="ms-auto d-flex align-items-center fw-bold text-success">
                         +100%
@@ -53,7 +53,7 @@
                 <div class="d-flex align-items-center">
                     <div>
                         <span class="h2 fw-bold text-dark">@Model.CountProduct</span>
-                        <h3 class="fs-6 text-muted ">Số loại sản phẩm</h3>
+                        <h3 class="fs-6 text-muted">Số loại sản phẩm</h3>
                     </div>
                     <div class="ms-auto d-flex align-items-center fw-bold text-primary">
                         +30%
@@ -79,150 +79,121 @@
     </div>
 </div>
 
-
-
 <div class="row">
-
-<div class="col-6">
+    <div class="col-6">
         <div class="bg-white shadow rounded-lg p-4">
             <div class="m-2">
-                <h1 for="chartType"> biểu đồ doanh thu:</h1>
+                <h1 for="chartType">Biểu đồ doanh thu:</h1>
                 <select id="chartType" onchange="changeChartType()">
                     <option value="week">Theo tuần</option>
                     <option value="month">Theo tháng</option>
                 </select>
             </div>
             <div class="col-12">
-                <canvas id="revenueChart" width="800" height="400"></canvas> <!-- Vùng hiển thị biểu đồ -->
-            </div>
-
-   
-        </div>
-
-</div>
-<div class="col-6">
-    <div class="bg-white shadow rounded-lg p-4">
-        <div class="mb-4 d-flex justify-content-between align-items-center">
-            <div>
-                <h3 class="text-xl font-weight-bold text-dark mb-2">
-                    Chi phí vận hành
-                </h3>
-                <span class="text-muted">
-                    Danh sách các giao dịch mới nhất
-                </span>
-            </div>
-            <div>
-                <a href="#" class="btn btn-link text-primary p-0">
-                    Xem tất cả
-                </a>
-            </div>
-        </div>
-        <div class="mt-4">
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Giao dịch</th>
-                            <th scope="col">Thời gian</th>
-                            <th scope="col">Số lượng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Chi phí <strong>mặt bằng</strong></td>
-                            <td>23-06-2024</td>
-                            <td class="font-weight-bold">-20,000,000đ</td>
-                        </tr>
-                        <tr>
-                            <td>Chi phí <strong>dịch vụ mạng, điện & nước</strong></td>
-                            <td>23-06-2024</td>
-                            <td class="font-weight-bold">-3,300,000đ</td>
-                        </tr>
-                        <tr>
-                            <td>Chi phí <strong>marketing & quảng cáo</strong></td>
-                            <td>18-06-2024</td>
-                            <td class="font-weight-bold">-1,200,000đ</td>
-                        </tr>
-                        <tr>
-                            <td>Chi phí <strong>Nhân sự</strong></td>
-                            <td>10-06-2024</td>
-                            <td class="font-weight-bold">-105,200,000đ</td>
-                        </tr>
-                        <tr>
-                            <td>Thanh toán hoá đơn <strong>hình in</strong></td>
-                            <td>08-06-2024</td>
-                            <td class="font-weight-bold">-$2300</td>
-                        </tr>
-                        <tr>
-                            <td>Thanh toán <strong>Thuế</strong></td>
-                            <td>29-05-2024</td>
-                            <td class="font-weight-bold">-$560</td>
-                        </tr>
-                        <tr>
-                            <td>Thanh toán hoá đơn <strong>vải cotton</strong></td>
-                            <td>20-05-2024</td>
-                            <td class="font-weight-bold">-$1437</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <canvas id="revenueChart" width="800" height="400"></canvas>
             </div>
         </div>
     </div>
-
-</div>
+    <div class="col-6">
+        <div class="bg-white shadow rounded-lg p-4">
+            <div class="mb-4 d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="text-xl font-weight-bold text-dark mb-2">
+                        Chi phí vận hành
+                    </h3>
+                    <span class="text-muted">
+                        Danh sách các giao dịch mới nhất
+                    </span>
+                </div>
+                <div>
+                    <a href="#" class="btn btn-link text-primary p-0">
+                        Xem tất cả
+                    </a>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Giao dịch</th>
+                                <th scope="col">Thời gian</th>
+                                <th scope="col">Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Chi phí <strong>mặt bằng</strong></td>
+                                <td>23-06-2024</td>
+                                <td class="font-weight-bold">-20,000,000đ</td>
+                            </tr>
+                            <tr>
+                                <td>Chi phí <strong>dịch vụ mạng, điện & nước</strong></td>
+                                <td>23-06-2024</td>
+                                <td class="font-weight-bold">-3,300,000đ</td>
+                            </tr>
+                            <tr>
+                                <td>Chi phí <strong>marketing & quảng cáo</strong></td>
+                                <td>18-06-2024</td>
+                                <td class="font-weight-bold">-1,200,000đ</td>
+                            </tr>
+                            <tr>
+                                <td>Chi phí <strong>Nhân sự</strong></td>
+                                <td>10-06-2024</td>
+                                <td class="font-weight-bold">-105,200,000đ</td>
+                            </tr>
+                            <tr>
+                                <td>Thanh toán hoá đơn <strong>hình in</strong></td>
+                                <td>08-06-2024</td>
+                                <td class="font-weight-bold">-2,300đ</td>
+                            </tr>
+                            <tr>
+                                <td>Thanh toán <strong>Thuế</strong></td>
+                                <td>29-05-2024</td>
+                                <td class="font-weight-bold">-560đ</td>
+                            </tr>
+                            <tr>
+                                <td>Thanh toán hoá đơn <strong>vải cotton</strong></td>
+                                <td>20-05-2024</td>
+                                <td class="font-weight-bold">-1,437đ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    // Lấy dữ liệu doanh thu theo tháng từ Model
     const chartDataMonth = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.chartDataetTotalAmountByMonth));
-
-    // Lấy dữ liệu doanh thu theo tuần từ Model
     const chartDataWeek = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.chartDataGetTotalAmountByWeek));
 
-    // Gắn nhãn cho từng tháng (giả sử 12 tháng trong năm)
-    const labelsMonth = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-        "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+    const labelsMonth = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
+    const labelsWeek = chartDataWeek.map(item => `Tuần ${item.Week}`);
 
-    // Gắn nhãn cho từng tuần (giả sử 52 tuần trong năm)
-    const labelsWeek = Array.from({ length: 52 }, (_, i) => `Tuần ${i + 1}`);
-
-    // Tạo biểu đồ ban đầu (theo tuần)
     const ctx = document.getElementById('revenueChart').getContext('2d');
     const chart = new Chart(ctx, {
-        type: 'line', // Loại biểu đồ: đường
+        type: 'line',
         data: {
-            labels: labelsWeek.slice(0, chartDataWeek.length), // Hiển thị đúng số tuần có dữ liệu
+            labels: labelsWeek,
             datasets: [{
                 label: 'Doanh thu cộng dồn',
-                data: chartDataWeek, // Dữ liệu doanh thu cộng dồn
-                borderColor: 'rgba(75, 192, 192, 1)', // Màu đường
-                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Màu nền dưới đường
-                borderWidth: 2, // Độ dày đường
-                tension: 0.4 // Độ cong của đường (0.4 là cong vừa phải)
+                data: chartDataWeek.map(item => item.TotalAmount),
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderWidth: 2,
+                tension: 0.4
             }]
         },
         options: {
-            responsive: true, // Tự động thay đổi kích thước
+            responsive: true,
             plugins: {
-                legend: {
-                    display: true,
-                    position: 'top' // Vị trí của chú thích
-                }
+                legend: { display: true, position: 'top' }
             },
             scales: {
-                y: {
-                    beginAtZero: true, // Bắt đầu từ giá trị 0
-                    title: {
-                        display: true,
-                        text: 'Doanh thu (VNĐ)'
-                    }
-                },
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Tuần' // Mặc định ban đầu là theo tuần
-                    }
-                }
+                y: { beginAtZero: true, title: { display: true, text: 'Doanh thu (VNĐ)' } },
+                x: { title: { display: true, text: 'Tuần' } }
             }
         }
     });
@@ -230,14 +201,14 @@
     function changeChartType() {
         const chartType = document.getElementById('chartType').value;
         if (chartType === 'month') {
-            chart.data.labels = labelsMonth.slice(0, chartDataMonth.length); // Hiển thị đúng số tháng có dữ liệu
-            chart.data.datasets[0].data = chartDataMonth; // Dữ liệu doanh thu cộng dồn theo tháng
-            chart.options.scales.x.title.text = 'Tháng'; // Cập nhật tiêu đề trục x
+            chart.data.labels = labelsMonth.slice(0, chartDataMonth.length);
+            chart.data.datasets[0].data = chartDataMonth.map(item => item.TotalAmount);
+            chart.options.scales.x.title.text = 'Tháng';
         } else {
-            chart.data.labels = labelsWeek.slice(0, chartDataWeek.length); // Hiển thị đúng số tuần có dữ liệu
-            chart.data.datasets[0].data = chartDataWeek; // Dữ liệu doanh thu cộng dồn theo tuần
-            chart.options.scales.x.title.text = 'Tuần'; // Cập nhật tiêu đề trục x
+            chart.data.labels = labelsWeek;
+            chart.data.datasets[0].data = chartDataWeek.map(item => item.TotalAmount);
+            chart.options.scales.x.title.text = 'Tuần';
         }
-        chart.update(); // Cập nhật biểu đồ
+        chart.update();
     }
 </script>

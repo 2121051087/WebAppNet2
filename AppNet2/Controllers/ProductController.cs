@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebAppNet2.Infrastructures.UnitOfWork;
 using WebAppNet2.Models.DTO;
+using WebAppNet2.Models.Entities.Catalog;
 
 namespace WebAppNet2.Controllers
 {
@@ -16,10 +17,18 @@ namespace WebAppNet2.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
-            var product = await _unitOfWork.ProductRepository.GetProducts();
-            return View(product);
+            var productVM = await _unitOfWork.ProductRepository.GetProducts();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                productVM = productVM
+                            .Where(p => p.ProductName != null && p.ProductName.ToUpper().Contains(searchString.ToUpper(), StringComparison.OrdinalIgnoreCase))
+                            .ToList();
+            }
+            ViewData["searchString"] = searchString;
+            return View(productVM);
         }
 
         [HttpGet]
@@ -70,21 +79,7 @@ namespace WebAppNet2.Controllers
             return View(productVM);
         }
         [HttpGet]
-        public async Task<IActionResult> Search([FromQuery] string searchString)
-        {
-            var productVM = await _unitOfWork.ProductRepository.GetProducts();
-
-            // Filter products by searchString
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                productVM = productVM
-                            .Where(p => p.ProductName != null && p.ProductName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                            .ToList();
-            }
-
-            // Return the filtered list to the view (or JSON if this is an API)
-            return View("Index", productVM); // Replace with `Json(productVM)` if this is an API
-        }
+      
 
         [HttpPost("{id}")]
 

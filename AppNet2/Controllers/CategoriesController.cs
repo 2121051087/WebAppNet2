@@ -18,32 +18,22 @@ namespace WebAppNet2.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromQuery] string? searchString)
         {
 
             var categoryVM = await _unitOfWork.CategoriesRepository.GetAllCategories();
 
-            
-            return View(categoryVM);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Search([FromQuery] string searchString)
-        {
-            var categoryVM = await _unitOfWork.CategoriesRepository.GetAllCategories();
-
-            // lọc theo searchString
-            // If searchString is provided, filter categories by CategoryName
             if (!string.IsNullOrEmpty(searchString))
             {
                 categoryVM = categoryVM
-                             .Where(c => c.CategoryName != null && c.CategoryName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                             .Where(c => c.CategoryName != null && c.CategoryName.ToUpper().Contains(searchString.ToUpper(), StringComparison.OrdinalIgnoreCase))
                              .ToList();
             }
-
-            // Return the filtered list to the view (or JSON if you're working with an API)
-            return View("Index", categoryVM);  // Or return Json(categoryVM) if this is an API
+            ViewData["searchString"] = searchString;
+            return View(categoryVM);
         }
+
+        
 
         [HttpGet]
         public IActionResult Create()

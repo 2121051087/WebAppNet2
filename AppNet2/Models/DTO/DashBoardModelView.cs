@@ -4,7 +4,7 @@
     {
         public List<double>? chartDataetTotalAmountByMonth { get; set; }
 
-        public List<double>? chartDataGetTotalAmountByWeek { get; set; }
+        public List<GetTotalAmountByWeekVM>? chartDataGetTotalAmountByWeek { get; set; }
 
 
         public int? CountConfirmedOrders { get; set; }
